@@ -12,16 +12,11 @@
         <!-- CSS FILES -->
         @push('styles')
         <link rel="preconnect" href="https://fonts.googleapis.com">
-
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
         <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,400;0,700;1,200&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
         {{-- <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/bootstrap-icons.css" rel="stylesheet">
         <link href="css/tooplate-kool-form-pack.css" rel="stylesheet"> --}}
-        {{-- <link href="{{ asset('resources/views/kool_form/css/bootstrap.min.css') }}" rel="stylesheet">
-        <link href="{{ asset('resources/views/kool_form/css/bootstrap-icons.css') }}" rel="stylesheet">
-        <link href="{{ asset('resources/views/kool_form/css/tooplate-kool-form-pack.css') }}" rel="stylesheet"> --}}
         @endpush
         @vite([
             'resources/views/kool_form/css/bootstrap.min.css',
@@ -45,6 +40,17 @@ https://www.tooplate.com/view/2136-kool-form-pack
 Bootstrap 5 Form Pack Template
 
 -->
+
+        <script type="module">
+            // console.log(Swal);
+            @if ($errors->any())
+                Swal.fire({
+                    icon: "error",
+                    title: "{{ __('Whoops! Something went wrong.') }}",
+                    text: "Something went wrong!"
+                });
+            @endif
+        </script>
     </head>
 
     <body>
@@ -160,6 +166,8 @@ Bootstrap 5 Form Pack Template
                     <div class="row">
 
                         <div class="col-lg-5 col-12 mx-auto">
+                            {{-- <x-validation-errors class="mb-4" /> --}}
+
                             <form class="custom-form login-form" role="form" method="post" action="{{ route('login') }}">
                                 @csrf
                                 <h2 class="hero-title text-center mb-4 pb-2">Login Form</h2>
@@ -216,7 +224,7 @@ Bootstrap 5 Form Pack Template
         ])
         @push('scripts')
             <!-- JAVASCRIPT FILES -->
-            {{-- <script src="js/jquery.min.js"></script>
+            {{-- <script src="js/jquery.min.js"></scrip>
             <script src="js/bootstrap.bundle.min.js"></script>
             <script src="js/countdown.js"></script>
             <script src="js/init.js"></script> --}}
