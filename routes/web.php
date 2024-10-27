@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    // dd('hello');
+    // return view('welcome');
+    return view('kool_form.login');
 });
 
 Route::middleware([
