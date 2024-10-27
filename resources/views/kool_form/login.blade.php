@@ -26,7 +26,9 @@
         @vite([
             'resources/views/kool_form/css/bootstrap.min.css',
             'resources/views/kool_form/css/bootstrap-icons.css',
-            'resources/views/kool_form/css/tooplate-kool-form-pack.css'
+            'resources/views/kool_form/css/tooplate-kool-form-pack.css',
+            'resources/css/app.css',
+            'resources/js/app.js'
         ])
 
         {{-- <link href="css/bootstrap.min.css" rel="stylesheet"> --}}
@@ -208,7 +210,6 @@ Bootstrap 5 Form Pack Template
             </section>
         </main>
         @vite([
-            'resources/views/kool_form/js/jquery.min.js',
             'resources/views/kool_form/js/bootstrap.bundle.min.js',
             'resources/views/kool_form/js/countdown.js',
             'resources/views/kool_form/js/init.js',

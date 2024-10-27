@@ -12,7 +12,7 @@ export default defineConfig({
                 'resources/views/kool_form/css/bootstrap-icons.css',
                 'resources/views/kool_form/css/tooplate-kool-form-pack.css',
 
-                'resources/views/kool_form/js/jquery.min.js',
+                // 'resources/views/kool_form/js/jquery.min.js',
                 'resources/views/kool_form/js/bootstrap.bundle.min.js',
                 'resources/views/kool_form/js/countdown.js',
                 'resources/views/kool_form/js/init.js',
@@ -20,4 +20,9 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    resolve: {
+        alias: {
+            '$': 'jQuery'
+        },
+    },
 });
