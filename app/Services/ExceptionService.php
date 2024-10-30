@@ -15,9 +15,6 @@ class ExceptionService
         $files = $this->getFiles();
         // dd('test_file');
         foreach($files as $exception_name){
-            if($exception_name == 'ExceptionHandler'){
-                continue;
-            }
             if(class_basename($e)==$exception_name){
                 $exception = eval('return new \App\Exceptions\\'.$exception_name.';');
                 return $exception->render($request);
