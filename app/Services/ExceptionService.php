@@ -24,7 +24,9 @@ class ExceptionService
         if($this->isValidCode($e->getCode())){
             return $this->apiResponse($e->getCode(),$e->getMessage());
         }
-        return $this->apiError($e->getMessage());
+        return null;
+        // return $e;
+        // return $this->apiError($e->getMessage());
 
     }
     public function getFiles(){

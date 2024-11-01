@@ -23,5 +23,6 @@ return Application::configure(basePath: dirname(__DIR__))
             if($request->is('api/*')){
                 return(new ExceptionService(app_path('Exceptions')))->render($request, $e);
             }
+            return null;
         });
     })->create();
