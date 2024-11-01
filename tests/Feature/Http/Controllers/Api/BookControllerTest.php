@@ -11,6 +11,7 @@ use App\Models\Book;
 use App\Models\Language;
 use App\Models\Publisher;
 use Illuminate\Http\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class BookControllerTest extends TestCase
 {
@@ -210,5 +211,46 @@ class BookControllerTest extends TestCase
         ];
         $response->assertStatus(Response::HTTP_UNAUTHORIZED)
                  ->assertJson($json);
+    }
+    #[DataProvider('invalidFormData')]
+    public function test_store_invalid($invalidData, $invalidFields){
+        Sanctum::actingAs(
+            User::factory()->create()
+        );
+        $response =  $this->json('post','/api/book', $invalidData,['Accept' => 'application/json']);
+        $response->assertInvalid($invalidFields);
+        // $response->assertSessionHasErrors($invalidFields);
+    }
+    public static function invalidFormData(): array
+    {
+        return [
+                [[
+                    'title'                 => null,
+                    'isbn'                  => null,
+                    'isbn_13'               => null,
+                    'published_at'          => null,
+                    'publisher_id'          => null,
+                    'language_id'           => null,
+                    // 'price'                 => null
+                ],
+                [
+                    'title',
+                    'isbn',
+                    'isbn_13',
+                    'published_at',
+                    'publisher_id',
+                    'language_id',
+                    // 'price'
+                ]]
+            // 'Email is not a valid email address' => [
+            //     ['email' => 'This is not an email'],
+            //     ['email']
+            // ],
+            // 'Passwords dont match' => [
+            //     ['password' => 'Strong password','password_confirmation' => 'Weak password'],
+            //     ['password']
+            // ],
+
+        ];
     }
 }
