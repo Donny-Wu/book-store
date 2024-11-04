@@ -6,6 +6,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/css/input.css',
                 'resources/js/app.js',
                 //kool_form assets
                 'resources/views/kool_form/css/bootstrap.min.css',
