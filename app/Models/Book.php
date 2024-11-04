@@ -10,6 +10,10 @@ class Book extends Model
     use HasFactory;
     //
     protected $guarded = [];
+
+    public function getShortTitleAttribute(){
+        return substr($this->title, 0, 20);
+    }
     public function publisher(){
         $this->hasOne(Publisher::class);
     }
