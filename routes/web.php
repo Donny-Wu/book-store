@@ -13,7 +13,8 @@ Route::get('/tailwind',function(){
     // dd('tailwind');
     // return view('template.text');
     // return view('template.collection');
-    return view('template.shop_list');
+    return view('template.form_layout');
+    // return view('template.shop_list');
 });
 
 Route::middleware([
@@ -21,6 +22,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::resource('book', \App\Http\Controllers\Web\BookController::class);
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
