@@ -243,5 +243,6 @@
             </tr> --}}
         </tbody>
     </table>
+    {{ $books->links('pagination::tailwind') }}
 </div>
 @endsection
