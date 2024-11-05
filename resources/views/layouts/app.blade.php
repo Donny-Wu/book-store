@@ -14,12 +14,30 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+
+
         <!-- Styles -->
         @livewireStyles
     </head>
     <body class="font-sans antialiased">
         <x-banner />
-
+        <script type="module">
+            console.log(Swal);
+            @if ($errors->any())
+                Swal.fire({
+                    icon: "error",
+                    title: "{{ __('Whoops! Something went wrong.') }}",
+                    text: "Something went wrong!"
+                });
+            @endif
+            @if(Session::has('response'))
+                Swal.fire({
+                    icon: "{{ Session::get('response')['icon'] }}",
+                    title: "{{ Session::get('response')['title'] }}",
+                    text: "{{ Session::get('response')['text'] }}"
+                });
+            @endif
+        </script>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @livewire('navigation-menu')
 
