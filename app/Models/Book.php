@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Book extends Model
 {
@@ -12,7 +13,8 @@ class Book extends Model
     protected $guarded = [];
 
     public function getShortTitleAttribute(){
-        return substr($this->title, 0, 20);
+        return Str::limit($this->title, 80, '...');
+        // return substr($this->title, 0, 20);
     }
     public function publisher(){
         $this->hasOne(Publisher::class);
