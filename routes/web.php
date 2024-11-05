@@ -23,6 +23,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::get('book/products', [\App\Http\Controllers\Web\BookController::class, 'products'])->name('book.products');
     Route::resource('book', \App\Http\Controllers\Web\BookController::class);
     Route::get('/dashboard', function () {
         return view('dashboard');

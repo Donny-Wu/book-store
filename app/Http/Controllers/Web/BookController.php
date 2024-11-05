@@ -13,6 +13,11 @@ use App\Models\Publisher;
 class BookController extends Controller
 {
     use HasDataResponse;
+
+    public function products(){
+        $books = Book::with(['publisher','language'])->get();
+        return view('book.products',compact('books'));
+    }
     /**
      * Display a listing of the resource.
      */
