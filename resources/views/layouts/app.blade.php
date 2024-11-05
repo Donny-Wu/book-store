@@ -34,7 +34,7 @@
                 Swal.fire({
                     icon: "{{ Session::get('response')['icon'] }}",
                     title: "{{ Session::get('response')['title'] }}",
-                    text: "{{ Session::get('response')['text'] }}"
+                    text: "{{ Session::get('response')['text']??'' }}"
                 });
             @endif
         </script>
