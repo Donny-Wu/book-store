@@ -18,7 +18,7 @@ class PublisherFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->unique()->randomElement(['博碩文化','旗標科技']),
+            'name' => $this->faker->unique()->randomElement(['歐萊體','博碩文化','旗標科技','佳魁資訊','電子工業','機械工業']),
         ];
     }
 }
