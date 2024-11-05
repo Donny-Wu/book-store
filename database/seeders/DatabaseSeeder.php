@@ -30,6 +30,6 @@ class DatabaseSeeder extends Seeder
         Language::factory(3)->create();
         Publisher::factory(2)->create();
         Book::factory(10)->create();
-        SChema::enableForeignKeyConstraints();
+        Schema::enableForeignKeyConstraints();
     }
 }
