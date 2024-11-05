@@ -17,9 +17,17 @@ class Book extends Model
         // return substr($this->title, 0, 20);
     }
     public function publisher(){
-        $this->hasOne(Publisher::class);
+        // $this->hasOne(Publisher::class);
+        return $this->belongsTo(Publisher::class);
     }
     public function language(){
-        $this->hasOne(Language::class);
+        return $this->belongsTo(Language::class);
+        // $this->hasOne(Language::class);
+    }
+    public function getPublisherNameAttribute(){
+        return $this->publisher->name;
+    }
+    public function getLanguageNameAttribute(){
+        return $this->language->name;
     }
 }
