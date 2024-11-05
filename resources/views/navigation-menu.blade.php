@@ -18,6 +18,9 @@
                     <x-nav-link href="{{ route('book.create') }}" :active="request()->routeIs('book.create')">
                         {{ '新增書籍' }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('book.index') }}" :active="request()->routeIs('book.index')">
+                        {{ '書籍清單' }}
+                    </x-nav-link>
                 </div>
             </div>
 
