@@ -42,7 +42,9 @@
                                     placeholder: '請選擇作者',
                                     multiple:true
                                 });
-                                // $('#authors_id').val([2,3]).trigger('change');
+                                @if(is_array($authors_id)&&!empty($authors_id))
+                                    $('#authors_id').val({{ Illuminate\Support\Js::from($authors_id) }}).trigger('change');
+                                @endif
                             </script>
                             @if($errors->has('language_id'))
                                 <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('language_id')[0] }}</span>

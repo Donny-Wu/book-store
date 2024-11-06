@@ -43,11 +43,13 @@ class BookController extends Controller
         $method     = 'POST';
         $action     = route('book.store');
         $authors    = Author::get(['name','id']);
+        $authors_id = [];
 
         return view('book.edit',compact(
         'languages',
        'publishers',
                   'authors',
+                  'authors_id',
                     'method',
                     'action'
         ));
@@ -62,7 +64,9 @@ class BookController extends Controller
     {
         //
         // dd($request->all());
-        $book = Book::create($request->all());
+        $authors_id = $request->authors_id;
+        $book       = Book::create($request->except('authors_id'));
+        $book->authors()->sync($authors_id);
         // $response = $this->response(Response::HTTP_OK,'新增成功');
         // dd(route('book.edit', compact('book')));
         $response = [
@@ -94,11 +98,13 @@ class BookController extends Controller
         $authors    = Author::get(['name','id']);
         $method     = 'PUT';
         $action     = route('book.update',compact('book'));
-
+        $authors_id = $book->authors()->get()->pluck('id')->toArray();
+        // dd($authors_id);
         return view('book.edit',compact(
          'languages',
         'publishers',
                    'authors',
+                   'authors_id',
                    'method',
                    'action',
                    'book'
@@ -111,14 +117,18 @@ class BookController extends Controller
     public function update(StoreBookRequest $request, Book $book)
     {
         //
-        dd($request->all());
-        $book->update($request->all());
+        // dd($request->authors_id);
+        $authors_id = $request->authors_id;
+        // dd($request->except('authors_id'));
+        // dd($request->input());
+        $book->update($request->except('authors_id'));
+        $book->authors()->sync($authors_id);
         // $id = $book->id;
         // $response = $this->response(Response::HTTP_OK,'更新成功');
         $response = [
-            'icon' => 'success',
+            'icon'  => 'success',
             'title' => '更新成功',
-            'text' => '更新成功',
+            'text'  => '更新成功',
         ];
 
         return redirect(route('book.edit', compact('book')))->with(compact(
