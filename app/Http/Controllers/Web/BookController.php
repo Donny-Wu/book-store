@@ -41,7 +41,7 @@ class BookController extends Controller
         $publishers = Publisher::all();
         $method     = 'POST';
         $action     = route('book.store');
-        $authors    = BookMaker::where('role',1)->get(['name','id']);
+        $authors    = BookMaker::where('role',BookMaker::ROLE_AUTHOR)->get(['name','id']);
 
         return view('book.edit',compact(
         'languages',
@@ -90,7 +90,7 @@ class BookController extends Controller
         //
         $languages  = Language::all();
         $publishers = Publisher::all();
-        $authors    = BookMaker::where('role',1)->get(['name','id']);
+        $authors    = BookMaker::where('role',BookMaker::ROLE_AUTHOR)->get(['name','id']);
         $method     = 'PUT';
         $action     = route('book.update',compact('book'));
 
