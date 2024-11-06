@@ -9,7 +9,7 @@ Route::get('/', 'App\Http\Controllers\Web\HomeController@index');
     // return view('welcome');
     // return view('kool_form.login');
 // });
-Route::get('/{temp_name}',function($temp_name){
+Route::get('/template/{temp_name}',function($temp_name){
     // dd('template.'.$temp_name);
     return view('template.'.$temp_name);
 });
