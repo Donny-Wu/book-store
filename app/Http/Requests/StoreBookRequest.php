@@ -29,7 +29,7 @@ class StoreBookRequest extends FormRequest
             'published_at'  => ['required', 'date'],
             'publisher_id'  => ['required','exists:App\Models\Publisher,id'],
             'language_id'   => ['required','exists:App\Models\Language,id'],
-            // 'price'         => ['required', 'decimal:2,10'],
+            'price'         => ['required'], //'decimal:2,10'
             'description'   => ['nullable', 'string'],
 
         ];

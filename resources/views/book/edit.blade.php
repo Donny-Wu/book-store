@@ -18,10 +18,13 @@
                             書名
                         </label>
                         <div class="mt-2">
-                        <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                            {{-- <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">workcation.com/</span> --}}
-                            <input type="text" name="title" id="" autocomplete="" value="{{ $book->title??'' }}"class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6" placeholder="書籍名稱">
-                        </div>
+                            <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                                {{-- <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">workcation.com/</span> --}}
+                                <input type="text" name="title" id="" autocomplete="" value="{{ $book->title??'' }}"class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6" placeholder="書籍名稱">
+                            </div>
+                            @if($errors->has('title'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('title')[0] }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="sm:col-span-4">
@@ -33,6 +36,9 @@
                                 {{-- <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">workcation.com/</span> --}}
                                 <input type="text" name="isbn" id="" autocomplete="" value="{{ $book->isbn??'' }}" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6" placeholder="ISBN(10碼)">
                             </div>
+                            @if($errors->has('isbn'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('isbn')[0] }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="sm:col-span-4">
@@ -43,6 +49,9 @@
                             <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                                 <input type="text" name="isbn_13" id="" autocomplete="" value="{{ $book->isbn_13??'' }}" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6" placeholder="ISBN(13碼)">
                             </div>
+                            @if($errors->has('isbn_13'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('isbn_13')[0] }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="sm:col-span-4">
@@ -53,29 +62,38 @@
                             <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
                                 <input type="date" name="published_at" id="" autocomplete="" value="{{ $book->published_at??'' }}" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6" placeholder="出版日期">
                             </div>
+                            @if($errors->has('published_at'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('published_at')[0] }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="sm:col-span-3">
                         <label for="" class="block text-sm/6 font-medium text-gray-900">出版商</label>
                         <div class="mt-2">
-                        <select id="" name="publisher_id" autocomplete="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
-                            @foreach($publishers as $row)
-                                <option value="{{ $row->id }}" @selected(isset($book->publisher_id)&&$row->id == $book->publisher_id)>{{ $row->name }}</option>
-                            @endforeach
-                        </select>
+                            <select id="" name="publisher_id" autocomplete="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
+                                @foreach($publishers as $row)
+                                    <option value="{{ $row->id }}" @selected(isset($book->publisher_id)&&$row->id == $book->publisher_id)>{{ $row->name }}</option>
+                                @endforeach
+                            </select>
+                            @if($errors->has('publisher_id'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('publisher_id')[0] }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="sm:col-span-3">
                         <label for="" class="block text-sm/6 font-medium text-gray-900">語言</label>
                         <div class="mt-2">
-                        <select id="" name="language_id" autocomplete="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
-                            @foreach($languages as $row)
-                                <option value="{{ $row->id }}" @selected(isset($book->language_id)&&$row->id == $book->language_id)>{{ $row->name }}</option>
-                            @endforeach
-                                {{-- <option>英文</option>
-                                <option>繁體中文</option>
-                                <option>簡體中文</option> --}}
-                        </select>
+                            <select id="" name="language_id" autocomplete="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
+                                @foreach($languages as $row)
+                                    <option value="{{ $row->id }}" @selected(isset($book->language_id)&&$row->id == $book->language_id)>{{ $row->name }}</option>
+                                @endforeach
+                                    {{-- <option>英文</option>
+                                    <option>繁體中文</option>
+                                    <option>簡體中文</option> --}}
+                            </select>
+                            @if($errors->has('language_id'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('language_id')[0] }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="sm:col-span-4">
@@ -87,14 +105,20 @@
                                 {{-- <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm">workcation.com/</span> --}}
                                 <input type="number" name="price" id="" value="{{ $book->price??0 }}" autocomplete="" step="0.1" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm/6" placeholder="價格">
                             </div>
+                            @if($errors->has('price'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('price')[0] }}</span>
+                            @endif
                         </div>
                     </div>
                     <div class="col-span-full">
                         <label for="about" class="block text-sm/6 font-medium text-gray-900">內容描述</label>
                         <div class="mt-2">
-                        <textarea id="about" name="description" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
-                            {{ $book->description??'' }}
-                        </textarea>
+                            <textarea id="about" name="description" rows="3" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6">
+                                {{ $book->description??'' }}
+                            </textarea>
+                            @if($errors->has('description'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('description')[0] }}</span>
+                            @endif
                         </div>
                         <p class="mt-3 text-sm/6 text-gray-600">內容描述.</p>
                     </div>
