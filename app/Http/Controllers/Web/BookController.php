@@ -11,6 +11,7 @@ use App\Models\Book;
 use App\Models\Language;
 use App\Models\Publisher;
 use App\Models\BookMaker;
+use App\Models\Author;
 
 class BookController extends Controller
 {
@@ -41,7 +42,7 @@ class BookController extends Controller
         $publishers = Publisher::all();
         $method     = 'POST';
         $action     = route('book.store');
-        $authors    = BookMaker::where('role',BookMaker::ROLE_AUTHOR)->get(['name','id']);
+        $authors    = Author::get(['name','id']);
 
         return view('book.edit',compact(
         'languages',
@@ -90,7 +91,7 @@ class BookController extends Controller
         //
         $languages  = Language::all();
         $publishers = Publisher::all();
-        $authors    = BookMaker::where('role',BookMaker::ROLE_AUTHOR)->get(['name','id']);
+        $authors    = Author::get(['name','id']);
         $method     = 'PUT';
         $action     = route('book.update',compact('book'));
 
