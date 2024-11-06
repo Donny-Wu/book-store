@@ -36,9 +36,6 @@
                                 @foreach($authors as $row)
                                     <option value="{{ $row->id }}" >{{ $row->name }}</option>
                                 @endforeach
-                                    {{-- <option value="1">AA</option>
-                                    <option value="2">BB</option>
-                                    <option value="3">CC</option> --}}
                             </select>
                             <script type="module">
                                 $('#authors_id').select2({
