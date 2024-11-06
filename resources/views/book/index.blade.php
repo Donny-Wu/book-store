@@ -110,7 +110,7 @@
                         {{ $book->isbn_13 }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $book->publish_at }}
+                        {{ $book->published_at }}
                     </td>
                     <td class="px-6 py-4">
                         {{ $book->publisher_name }}
@@ -122,7 +122,7 @@
                         {{ $book->price }}
                     </td>
                     <td class="px-6 py-4">
-                        <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">編輯</a>
+                        <a href="{{ route('book.edit',['book'=>$book]) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">編輯</a>
                     </td>
                 </tr>
             @endforeach
