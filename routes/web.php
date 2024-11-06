@@ -19,7 +19,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::resource('channel-order', \App\Http\Controllers\Web\ChannelOrderController::class);
+    Route::resource('chanel-order', \App\Http\Controllers\Web\ChanelOrderController::class);
     Route::get('book/products', [\App\Http\Controllers\Web\BookController::class, 'products'])->name('book.products');
     Route::resource('book', \App\Http\Controllers\Web\BookController::class);
     Route::get('/dashboard', function () {
