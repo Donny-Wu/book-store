@@ -9,13 +9,9 @@ Route::get('/', 'App\Http\Controllers\Web\HomeController@index');
     // return view('welcome');
     // return view('kool_form.login');
 // });
-Route::get('/tailwind',function(){
-    return view('template.table_filter_light');
-    // dd('tailwind');
-    // return view('template.text');
-    // return view('template.collection');
-    // return view('template.form_layout');
-    // return view('template.shop_list');
+Route::get('/{temp_name}',function($temp_name){
+    // dd('template.'.$temp_name);
+    return view('template.'.$temp_name);
 });
 
 Route::middleware([
@@ -23,6 +19,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::resource('channel-order', \App\Http\Controllers\Web\ChannelOrderController::class);
     Route::get('book/products', [\App\Http\Controllers\Web\BookController::class, 'products'])->name('book.products');
     Route::resource('book', \App\Http\Controllers\Web\BookController::class);
     Route::get('/dashboard', function () {
