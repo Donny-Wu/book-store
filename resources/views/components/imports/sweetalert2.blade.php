@@ -3,9 +3,9 @@
         console.log(Swal);
         @if ($errors->any())
             Swal.fire({
-                icon: "error",
-                title: "{{ __('Whoops! Something went wrong.') }}",
-                text: "Something went wrong!"
+                icon:  "error",
+                title: "資料驗證失敗",
+                text:  "請按照欄位提示，輸入正確資料"
             });
         @endif
         @if(Session::has('response')&&
