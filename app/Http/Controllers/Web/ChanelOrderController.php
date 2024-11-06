@@ -4,9 +4,14 @@ namespace App\Http\Controllers\Web;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Interface\ChanelInterface;
+use App\Enum\Chanel;
+use Storage;
 
 class ChanelOrderController extends Controller
 {
+    public function __construct(ChanelInterface $service){
+    }
     /**
      * Display a listing of the resource.
      */
@@ -21,7 +26,18 @@ class ChanelOrderController extends Controller
     public function create()
     {
         //
-        return view('chanel_order.upload');
+        $momo_action  = route( 'chanel-order.upload',['service'=>Chanel::MOMO]);
+        $elite_action = route( 'chanel-order.upload',['service'=>Chanel::ELITE]);
+        // dd($action);
+        return view('chanel_order.upload',compact(
+            'momo_action',
+            'elite_action'
+        ));
+    }
+    public function upload(Request $request){
+        // dd($request->url(),app()->request->route('service'));
+        $path = $request->file->store('chanels/'.$request->route('service'));
+        // dd($path);
     }
 
     /**
@@ -30,6 +46,8 @@ class ChanelOrderController extends Controller
     public function store(Request $request)
     {
         //
+        // Storage::put('test.jpg', $request->file('ImageFile')->get());
+        dd($request->all());
     }
 
     /**
