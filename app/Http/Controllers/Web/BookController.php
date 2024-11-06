@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use App\Models\Book;
 use App\Models\Language;
 use App\Models\Publisher;
+use App\Models\BookMaker;
 
 class BookController extends Controller
 {
@@ -40,10 +41,12 @@ class BookController extends Controller
         $publishers = Publisher::all();
         $method     = 'POST';
         $action     = route('book.store');
+        $authors    = BookMaker::where('role',1)->get(['name','id']);
 
         return view('book.edit',compact(
         'languages',
-        'publishers',
+       'publishers',
+                  'authors',
                     'method',
                     'action'
         ));
@@ -58,13 +61,13 @@ class BookController extends Controller
     {
         //
         // dd($request->all());
-        $book = Book::create($request->all())->id;
+        $book = Book::create($request->all());
         // $response = $this->response(Response::HTTP_OK,'新增成功');
         // dd(route('book.edit', compact('book')));
         $response = [
-            'icon' => 'success',
+            'icon'  => 'success',
             'title' => '新增成功',
-            'text' => '新增成功',
+            'text'  => '新增成功',
         ];
         return redirect(route('book.edit', compact('book')))->with(compact(
             'response'
@@ -87,15 +90,17 @@ class BookController extends Controller
         //
         $languages  = Language::all();
         $publishers = Publisher::all();
+        $authors    = BookMaker::where('role',1)->get(['name','id']);
         $method     = 'PUT';
         $action     = route('book.update',compact('book'));
 
         return view('book.edit',compact(
-        'languages',
+         'languages',
         'publishers',
-                    'method',
-                    'action',
-                    'book'
+                   'authors',
+                   'method',
+                   'action',
+                   'book'
         ));
     }
 
@@ -105,6 +110,7 @@ class BookController extends Controller
     public function update(StoreBookRequest $request, Book $book)
     {
         //
+        dd($request->all());
         $book->update($request->all());
         // $id = $book->id;
         // $response = $this->response(Response::HTTP_OK,'更新成功');

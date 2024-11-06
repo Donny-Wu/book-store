@@ -27,6 +27,31 @@
                             @endif
                         </div>
                     </div>
+                    <div class="sm:col-span-3">
+                        <label for="" class="block text-sm/6 font-medium text-gray-900">作者</label>
+                        <div class="mt-2">
+                            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+                            <script type="module" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+                            <select id="authors_id" name="authors_id[]" multiple="multiple" autocomplete="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
+                                @foreach($authors as $row)
+                                    <option value="{{ $row->id }}" >{{ $row->name }}</option>
+                                @endforeach
+                                    {{-- <option value="1">AA</option>
+                                    <option value="2">BB</option>
+                                    <option value="3">CC</option> --}}
+                            </select>
+                            <script type="module">
+                                $('#authors_id').select2({
+                                    placeholder: '請選擇作者',
+                                    multiple:true
+                                });
+                                // $('#authors_id').val([2,3]).trigger('change');
+                            </script>
+                            @if($errors->has('language_id'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('language_id')[0] }}</span>
+                            @endif
+                        </div>
+                    </div>
                     <div class="sm:col-span-4">
                         <label for="username" class="block text-sm/6 font-medium text-gray-900">
                             ISBN
