@@ -46,7 +46,7 @@ class MomoService implements ChanelInterface{
             $newRow['chanel_company_id']    = 2;
             $newRow['order_date']           = Carbon::today();
             $newRow['total_price']          = $newRow['product_qty'] * $newRow['product_price'];
-            // $newRow['create_at']            = Carbon::now();
+            $newRow['created_at']           = Carbon::now();
             return $newRow;
         });
         // dd('momo processData',$this->data);

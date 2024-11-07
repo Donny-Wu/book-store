@@ -64,6 +64,7 @@ class EliteService implements ChanelInterface{
                 $newRow['chanel_company_id']    = 1;
                 $newRow['order_date']           = Carbon::today();
                 $newRow['total_price']          = $newRow['product_qty'] * $newRow['product_price'];
+                $newRow['created_at']           = Carbon::now();
                 $newRowArray[]                  = $newRow;
             }
             return $newRowArray;
