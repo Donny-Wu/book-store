@@ -12,5 +12,11 @@ class ChanelWorkController extends Controller
     public function __construct(){}
     public function upload(UploadChanelRequest $request){
         $path = $request->file->store('chanels/'.$request->route('service'));
+        $response = [
+                'icon'  => 'success',
+                'title' => '訂單資料上傳成功',
+                'text'  => '訂單資料上傳成功',
+        ];
+        return redirect()->back()->with('response', $response);
     }
 }
