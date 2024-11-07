@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\ChanelOrder;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Interface\ChanelInterface;
@@ -18,6 +19,8 @@ class ChanelOrderController extends Controller
     public function index()
     {
         //
+        $chanel_orders = ChanelOrder::with(['chanel_company'])->orderBy('id','desc')->paginate();
+        return view('chanel_order.index',compact('chanel_orders'));
     }
 
     /**
