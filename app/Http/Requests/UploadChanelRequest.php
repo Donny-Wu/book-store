@@ -13,7 +13,7 @@ class UploadChanelRequest extends FormRequest
         'file'         => ['required', 'mimetypes:text/plain,text/csv', 'max:10000'],
     ];
     private $elite_rules = [
-        'file'         => ['required', 'mimetypes:xls', 'max:10000'],
+        'file'         => ['required', 'mimetypes:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'max:10000'],
     ];
     /**
      * Determine if the user is authorized to make this request.
