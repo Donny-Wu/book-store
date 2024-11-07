@@ -10,10 +10,10 @@ use Illuminate\Contracts\Validation\Validator;
 class UploadChanelRequest extends FormRequest
 {
     private $momo_rules = [
-        'file'         => ['required', 'mimes:csv', 'max:10000'],
+        'file'         => ['required', 'mimetypes:text/plain,text/csv', 'max:10000'],
     ];
     private $elite_rules = [
-        'file'         => ['required', 'mimes:xls', 'max:10000'],
+        'file'         => ['required', 'mimetypes:xls', 'max:10000'],
     ];
     /**
      * Determine if the user is authorized to make this request.
