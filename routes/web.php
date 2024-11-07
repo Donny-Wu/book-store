@@ -19,7 +19,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::post('chanel-order/{service}/upload', [\App\Http\Controllers\Web\ChanelOrderController::class, 'upload'])->name('chanel-order.upload');
+    Route::post('chanel-work/{service}/upload', [\App\Http\Controllers\Web\ChanelWorkController::class, 'upload'])->name('chanel-work.upload');
     Route::resource('chanel-order', \App\Http\Controllers\Web\ChanelOrderController::class);
     Route::get('book/products', [\App\Http\Controllers\Web\BookController::class, 'products'])->name('book.products');
     Route::resource('book', \App\Http\Controllers\Web\BookController::class);
