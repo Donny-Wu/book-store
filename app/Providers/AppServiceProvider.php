@@ -16,15 +16,16 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
-        switch(app()->request->route('service')) {
-            case Chanel::ELITE:
-                $this->app->singleton(ChanelInterface::class, EliteService::class);
-                break;
-            case Chanel::MOMO:
-                $this->app->singleton(ChanelInterface::class, MomoService::class);
-                break;
-        }
-        // $this->app->singleton(ChanelInterface::class, MomoService::class);
+        $this->app->singleton(ChanelInterface::class,function($app) {
+            $service = $app->request->route('service');
+            switch($service) {
+                case Chanel::ELITE->value:// 通路商:誠品實作
+                    return $app->make(EliteService::class);
+                case Chanel::MOMO->value: // 通路商:MOMO實作
+                    return $app->make(MomoService::class);
+                default: throw new \Exception('Chanel not found');
+            }
+        });
     }
 
     /**
