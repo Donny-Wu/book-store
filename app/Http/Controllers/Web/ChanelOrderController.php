@@ -10,7 +10,7 @@ use Storage;
 
 class ChanelOrderController extends Controller
 {
-    public function __construct(ChanelInterface $service){
+    public function __construct(){
     }
     /**
      * Display a listing of the resource.
@@ -26,20 +26,14 @@ class ChanelOrderController extends Controller
     public function create()
     {
         //
-        $momo_action  = route( 'chanel-order.upload',['service'=>Chanel::MOMO]);
-        $elite_action = route( 'chanel-order.upload',['service'=>Chanel::ELITE]);
+        $momo_action  = route( 'chanel-work.upload',['service'=>Chanel::MOMO]);
+        $elite_action = route( 'chanel-work.upload',['service'=>Chanel::ELITE]);
         // dd($action);
         return view('chanel_order.upload',compact(
-            'momo_action',
+             'momo_action',
             'elite_action'
         ));
     }
-    public function upload(Request $request){
-        // dd($request->url(),app()->request->route('service'));
-        $path = $request->file->store('chanels/'.$request->route('service'));
-        // dd($path);
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -47,7 +41,6 @@ class ChanelOrderController extends Controller
     {
         //
         // Storage::put('test.jpg', $request->file('ImageFile')->get());
-        dd($request->all());
     }
 
     /**
