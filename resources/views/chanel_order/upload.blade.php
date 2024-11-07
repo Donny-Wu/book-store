@@ -15,6 +15,10 @@
                         @csrf
                         <button type="submit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">上傳檔案</button>
                         <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" name="file">
+                            @if($errors->has('service')&&$errors->get('service')[0]=='momo'&& $errors->has('file'))
+                                {{-- @dd($errors->get('service')[0],request()->route('service')) --}}
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('file')[0] }}</span>
+                            @endif
                     </form>
                 </div>
             </div>
@@ -27,6 +31,9 @@
                         {{-- dark:text-white --}}
                         <button type="submit" class="block mb-2 text-sm font-medium text-gray-900  dark:text-white" for="file_input">上傳檔案</button>
                         <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" id="file_input" type="file" name="file">
+                            @if($errors->has('service')&&$errors->get('service')[0]=='elite'&&$errors->has('file'))
+                                <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('file')[0] }}</span>
+                            @endif
                     </form>
                 </div>
             </div>
