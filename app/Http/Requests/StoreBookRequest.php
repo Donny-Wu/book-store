@@ -31,6 +31,7 @@ class StoreBookRequest extends FormRequest
             'language_id'   => ['required','exists:App\Models\Language,id'],
             'price'         => ['required'], //'decimal:2,10'
             'description'   => ['nullable', 'string'],
+            'authors_id'    => ['required']
 
         ];
     }
