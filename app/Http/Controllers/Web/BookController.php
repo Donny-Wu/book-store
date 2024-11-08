@@ -42,7 +42,7 @@ class BookController extends Controller
         $publishers = Publisher::all();
         $method     = 'POST';
         $action     = route('book.store');
-        $authors    = Author::get(['name','id']);
+        $authors    = Author::get(['name','id'])->pluck('name','id')->all();
         $authors_id = [];
 
         return view('book.edit',compact(
@@ -95,7 +95,7 @@ class BookController extends Controller
         //
         $languages  = Language::all();
         $publishers = Publisher::all();
-        $authors    = Author::get(['name','id']);
+        $authors    = Author::get(['name','id'])->pluck('name','id')->all();
         $method     = 'PUT';
         $action     = route('book.update',compact('book'));
         $authors_id = $book->authors()->get()->pluck('id')->toArray();
