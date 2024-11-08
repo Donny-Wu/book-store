@@ -26,6 +26,11 @@ class AppServiceProvider extends ServiceProvider
                 default: throw new \Exception('Chanel not found');
             }
         });
+
+        if ($this->app->environment('local')) {// 本地環境安裝Telescope
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**
