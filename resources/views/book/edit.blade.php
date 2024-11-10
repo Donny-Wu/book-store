@@ -13,7 +13,7 @@
                 </p>
 
                 <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div class="sm:col-span-4">
+                    <div class="sm:col-span-3">
                         <label for="username" class="block text-sm/6 font-medium text-gray-900">
                             書名
                         </label>
@@ -25,6 +25,12 @@
                             @if($errors->has('title'))
                                 <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('title')[0] }}</span>
                             @endif
+                        </div>
+                    </div>
+                    <div class="sm:col-span-3 row-span-10">
+                        <label for="" class="block text-sm/6 font-medium text-gray-900">圖片</label>
+                        <div class="mt-2">
+                            {{-- <x-image-upload name="image" :src="$book->image??null" /> --}}
                         </div>
                     </div>
                     <div class="sm:col-span-3">
