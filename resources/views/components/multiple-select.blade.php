@@ -14,7 +14,4 @@
             $('#{{ $select_id }}').val({{ Illuminate\Support\Js::from($values) }}).trigger('change');
         @endif
     </script>
-    {{-- @if($errors->has('{{ $name }}'))
-        <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('{{ $name }}')[0] }}</span>
-    @endif --}}
 </div>
