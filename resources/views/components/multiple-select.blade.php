@@ -1,9 +1,5 @@
 <div>
     <!-- It is not the man who has too little, but the man who craves more, that is poor. - Seneca -->
-    @pushOnce('head-scripts')
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-        <script type="module" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    @endPushOnce
     <select id="{{ $select_id }}" name="{{ $name }}[]" multiple="multiple" autocomplete="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm/6">
         @foreach($options as $id=>$text)
             <option value="{{ $id }}" >{{ $text }}</option>
