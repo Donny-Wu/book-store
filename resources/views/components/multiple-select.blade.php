@@ -7,7 +7,7 @@
     </select>
     <script type="module">
         $('#{{ $select_id }}').select2({
-            placeholder: '請選擇作者',
+            placeholder: '{{ $placeholder }}',
             multiple:true
         });
         @if(is_array($values)&&!empty($values))

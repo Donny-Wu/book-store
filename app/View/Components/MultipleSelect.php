@@ -12,16 +12,18 @@ class MultipleSelect extends Component
     public $options         = [];
     public $select_id       = null;
     public $values          = [];
+    public $placeholder     = '';
     /**
      * Create a new component instance.
      */
-    public function __construct($name, $options, $values)
+    public function __construct($name, $options, $values,$placeholder='')
     {
         //
         $this->name         = $name;
         $this->options      = $options;
         $this->values       = $values;
         $this->select_id    = $this->name.uniqid();
+        $this->placeholder  = $placeholder;
     }
 
     /**

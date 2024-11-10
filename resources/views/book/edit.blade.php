@@ -36,7 +36,7 @@
                     <div class="sm:col-span-3">
                         <label for="" class="block text-sm/6 font-medium text-gray-900">作者</label>
                         <div class="mt-2">
-                            <x-multiple-select name="authors_id" :options="$authors" :values="(!empty($authors_id))?$authors_id:old('authors_id',[])" />
+                            <x-multiple-select name="authors_id" :options="$authors" :values="(!empty($authors_id))?$authors_id:old('authors_id',[])" :placeholder="'請選擇作者'"/>
                             @if($errors->has('authors_id'))
                                 <span style="font-size:1rem;font-weight:bold;color:red;margin-bottom:5rem;">{{ $errors->get('authors_id')[0] }}</span>
                             @endif
