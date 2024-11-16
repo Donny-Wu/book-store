@@ -44,8 +44,16 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
+            'write' => [
+                'host' => env('DB_HOST', 'mysql'),       // 主資料庫
+            ],
+            'read' => [
+                'host' => [
+                    env('DB_READ_HOST', 'mysql_slave'),  // 從資料庫
+                ],
+            ],
             'url' => env('DB_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
+            // 'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
             'username' => env('DB_USERNAME', 'root'),
