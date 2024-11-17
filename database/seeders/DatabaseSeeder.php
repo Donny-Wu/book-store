@@ -18,17 +18,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->withPersonalTeam()->create();
-
-        // User::factory()->withPersonalTeam()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::truncate();
+        User::factory()->withPersonalTeam()->create([
+            'name'  => 'donny',
+            'email' => 'donny@gmail.com',
+        ]);
         Schema::disableForeignKeyConstraints();
         Language::truncate();
         Publisher::truncate();
         Book::truncate();
         Language::factory(3)->create();
         Publisher::factory(2)->create();
+        sleep(1);
         Book::factory(10)->create();
         Schema::enableForeignKeyConstraints();
     }
