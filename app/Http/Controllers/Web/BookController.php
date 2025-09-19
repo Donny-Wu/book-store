@@ -12,6 +12,7 @@ use App\Models\Language;
 use App\Models\Publisher;
 use App\Models\BookMaker;
 use App\Models\Author;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -64,8 +65,12 @@ class BookController extends Controller
     {
         //
         // dd($request->all());
+        $data = $request->except(['authors_id','image']);
+        if($request->hasFile('image')) {
+            $data['image'] = $this->uploadImage($request->file('image'));
+        }
         $authors_id = $request->authors_id;
-        $book       = Book::create($request->except('authors_id'));
+        $book       = Book::create($data);
         $book->authors()->sync($authors_id);
         // $response = $this->response(Response::HTTP_OK,'新增成功');
         // dd(route('book.edit', compact('book')));
@@ -118,10 +123,17 @@ class BookController extends Controller
     {
         //
         // dd($request->authors_id);
+        $data = $request->except(['authors_id', 'image']);
         $authors_id = $request->authors_id;
+        if($request->hasFile('image')) {
+            if($book->image){
+                $this->deleteImage($book->image);
+            }
+            $data['image'] = $this->uploadImage($request->file('image'));
+        }
         // dd($request->except('authors_id'));
         // dd($request->input());
-        $book->update($request->except('authors_id'));
+        $book->update($data);
         $book->authors()->sync($authors_id);
         // $id = $book->id;
         // $response = $this->response(Response::HTTP_OK,'更新成功');
@@ -142,5 +154,19 @@ class BookController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    /**
+     * Summary of uploadImage
+     * @param mixed $file
+     */
+    private function uploadImage($file){
+        $file_name = time().'-'.uniqid().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('book', $file_name,'public');
+        return $path;
+    }
+    private function deleteImage($path){
+        if(Storage::disk('public')->exists($path)){
+            Storage::disk('public')->delete($path);
+        }
     }
 }

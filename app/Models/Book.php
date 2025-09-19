@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -11,6 +12,12 @@ class Book extends Model
     use HasFactory;
     //
     protected $guarded = [];
+    public function getImageUrlAttribute(){
+        if($this->image){
+            return Storage::disk('public')->url($this->image);
+        }
+        return asset('images/default-book.jpg');
+    }
     public function authors(){
         return $this->belongsToMany(Author::class,'book_author');
     }

@@ -558,22 +558,68 @@
                             <!-- 圖片上傳 -->
                             <div class="form-group">
                                 <label class="form-label">書籍封面</label>
-                                <div class="image-upload-area">
+                                <!-- 顯示現有圖片（如果有的話） -->
+                                @if(isset($book) && $book->image)
+                                    <div class="mb-4 existing-image">
+                                        <p class="text-sm text-gray-600 mb-2">目前圖片：</p>
+                                        <img src="{{ $book->image_url }}"
+                                            alt="{{ $book->title }}"
+                                            class="w-32 h-40 object-cover rounded-lg border-2 border-gray-200">
+                                    </div>
+                                @endif
+
+                                <!-- 圖片預覽區域（初始隱藏） -->
+                                <div id="imagePreview" class="hidden mb-4">
+                                    <div class="text-center">
+                                        <img id="previewImg"
+                                            src=""
+                                            alt="預覽圖片"
+                                            class="w-32 h-40 object-cover rounded-lg border-2 border-blue-200 mx-auto mb-2">
+                                        <p id="fileName" class="text-sm text-gray-600 mb-2"></p>
+                                        <p id="fileSize" class="text-xs text-gray-500 mb-3"></p>
+                                        <button type="button"
+                                                id="removeImageBtn"
+                                                class="text-red-600 hover:text-red-800 text-sm font-medium">
+                                            移除圖片
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- 上傳區域 -->
+                                <div class="image-upload-area" id="uploadArea">
                                     <div class="upload-icon">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
                                     </div>
-                                    <h3 class="font-semibold text-gray-700 mb-2">上傳書籍封面</h3>
+                                    <h3 class="font-semibold text-gray-700 mb-2">
+                                        {{ isset($book) && $book->image ? '更換書籍封面' : '上傳書籍封面' }}
+                                    </h3>
                                     <p class="text-gray-500 text-sm mb-4">支援 PNG、JPG、GIF 格式，檔案大小不超過 10MB</p>
                                     <div class="text-sm text-gray-600">
-                                        <label class="cursor-pointer text-blue-600 hover:text-blue-800 font-semibold">
+                                        <label for="imageInput" class="cursor-pointer text-blue-600 hover:text-blue-800 font-semibold">
                                             點擊選擇檔案
-                                            <input type="file" name="image" class="hidden" accept="image/*">
                                         </label>
                                         或拖放檔案至此處
                                     </div>
                                 </div>
+
+                                <!-- 檔案輸入（放在上傳區域外面，保持隱藏） -->
+                                <input type="file"
+                                    name="image"
+                                    id="imageInput"
+                                    class="hidden"
+                                    accept="image/jpeg,image/png,image/jpg,image/gif">
+
+                                <!-- 錯誤訊息 -->
+                                @if($errors->has('image'))
+                                    <div class="error-message mt-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        {{ $errors->first('image') }}
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
@@ -616,64 +662,141 @@
 </div>
 
 <script>
-    // 圖片上傳預覽功能
     document.addEventListener('DOMContentLoaded', function() {
-        const fileInput = document.querySelector('input[type="file"]');
-        const uploadArea = document.querySelector('.image-upload-area');
+    // 取得元素
+        const fileInput = document.getElementById('imageInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeImageBtn = document.getElementById('removeImageBtn');
+        const existingImage = document.querySelector('.existing-image');
 
-        if (fileInput && uploadArea) {
-            fileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        // 創建預覽圖片
-                        const preview = document.createElement('div');
-                        preview.innerHTML = `
-                            <img src="${e.target.result}"
-                                 class="w-32 h-40 object-cover rounded-lg border-2 border-blue-200 mx-auto mb-2">
-                            <p class="text-sm text-gray-600">${file.name}</p>
-                        `;
-
-                        // 替換上傳區域內容
-                        const originalContent = uploadArea.innerHTML;
-                        uploadArea.innerHTML = preview.innerHTML;
-
-                        // 添加移除按鈕
-                        const removeBtn = document.createElement('button');
-                        removeBtn.type = 'button';
-                        removeBtn.className = 'mt-2 text-red-600 hover:text-red-800 text-sm font-medium';
-                        removeBtn.textContent = '移除圖片';
-                        removeBtn.onclick = function() {
-                            fileInput.value = '';
-                            uploadArea.innerHTML = originalContent;
-                        };
-                        uploadArea.appendChild(removeBtn);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+        // 確認元素存在
+        if (!fileInput) {
+            console.error('找不到 imageInput 元素');
+            return;
         }
 
-        // 表單驗證
+        // 點擊上傳區域觸發檔案選擇
+        uploadArea.addEventListener('click', function(e) {
+            // 如果點擊的是 label 元素，讓它自然觸發
+            if (e.target.tagName !== 'LABEL' && !e.target.closest('label')) {
+                fileInput.click();
+            }
+        });
+
+        // 拖放功能
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('border-blue-500', 'bg-blue-50');
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('border-blue-500', 'bg-blue-50');
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('border-blue-500', 'bg-blue-50');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                // 手動設定檔案到 input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(files[0]);
+                fileInput.files = dataTransfer.files;
+
+                handleFileSelect(files[0]);
+            }
+        });
+
+        // 檔案選擇事件
+        fileInput.addEventListener('change', function(e) {
+            console.log('檔案已選擇:', e.target.files); // 除錯用
+            if (e.target.files && e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        // 移除圖片按鈕
+        removeImageBtn.addEventListener('click', function() {
+            resetImageUpload();
+        });
+
+        // 處理檔案選擇
+        function handleFileSelect(file) {
+            console.log('處理檔案:', file); // 除錯用
+
+            // 驗證檔案類型
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            if (!validTypes.includes(file.type)) {
+                alert('請選擇有效的圖片檔案 (JPEG, PNG, JPG, GIF)');
+                fileInput.value = ''; // 清空輸入
+                return;
+            }
+
+            // 驗證檔案大小 (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('圖片大小不能超過 10MB');
+                fileInput.value = ''; // 清空輸入
+                return;
+            }
+
+            // 顯示預覽
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // 更新預覽圖片
+                previewImg.src = e.target.result;
+                fileName.textContent = file.name;
+                fileSize.textContent = `大小: ${(file.size / 1024).toFixed(2)} KB`;
+
+                // 顯示預覽區域，隱藏上傳區域
+                imagePreview.classList.remove('hidden');
+                uploadArea.classList.add('hidden');
+
+                // 如果有現有圖片，隱藏它
+                if (existingImage) {
+                    existingImage.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 重置上傳
+        function resetImageUpload() {
+            console.log('重置上傳'); // 除錯用
+
+            // 清空 file input
+            fileInput.value = '';
+
+            // 隱藏預覽，顯示上傳區域
+            imagePreview.classList.add('hidden');
+            uploadArea.classList.remove('hidden');
+
+            // 如果有現有圖片，重新顯示
+            if (existingImage) {
+                existingImage.classList.remove('hidden');
+            }
+
+            // 清空預覽內容
+            previewImg.src = '';
+            fileName.textContent = '';
+            fileSize.textContent = '';
+        }
+
+        // 表單提交前驗證
         const form = document.querySelector('form');
         if (form) {
             form.addEventListener('submit', function(e) {
-                const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
-                let hasErrors = false;
-
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        field.classList.add('border-red-500');
-                        hasErrors = true;
-                    } else {
-                        field.classList.remove('border-red-500');
-                    }
-                });
-
-                if (hasErrors) {
-                    e.preventDefault();
-                    alert('請填寫所有必填欄位');
+                // 確認 fileInput 的值
+                if (fileInput.files.length > 0) {
+                    console.log('即將提交的檔案:', fileInput.files[0]);
                 }
             });
         }

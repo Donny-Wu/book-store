@@ -31,8 +31,20 @@ class StoreBookRequest extends FormRequest
             'language_id'   => ['required','exists:App\Models\Language,id'],
             'price'         => ['required'], //'decimal:2,10'
             'description'   => ['nullable', 'string'],
-            'authors_id'    => ['required']
+            'authors_id'    => ['required'],
+            'authors_id.*'  => ['exists:App\Models\Author,id'],
+            'image'         => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:10240'], // 最大 10MB
 
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'image.image' => '請上傳有效的圖片檔案',
+            'image.mimes' => '圖片格式必須是 jpeg, png, jpg 或 gif',
+            'image.max' => '圖片大小不能超過 10MB',
+            'authors_id.required' => '請至少選擇一位作者',
+            'authors_id.*.exists' => '選擇的作者不存在',
         ];
     }
 }
