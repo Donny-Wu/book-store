@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
+    {{-- <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-2xl leading-tight flex items-center gap-3">
                 <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
@@ -13,7 +13,7 @@
                 歡迎回來，{{ Auth::user()->name ?? '管理員' }}！
             </div>
         </div>
-    </x-slot>
+    </x-slot> --}}
 
     <style>
         .dashboard-stats {
@@ -206,10 +206,38 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        /* Welcome section */
+        .welcome-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
     </style>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <h1 class="welcome-title">歡迎使用 BookHaven 管理系統</h1>
+                <p class="text-gray-600 dark:text-gray-400">
+                    管理您的書籍庫存、訂單處理和用戶資料的完整平台
+                </p>
+            </div>
+
             <!-- 統計卡片 -->
             <div class="dashboard-stats">
                 <div class="stat-card blue">
@@ -218,7 +246,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                         </svg>
                     </div>
-                    <div class="stat-number">{{ $books->count() ?? '156' }}</div>
+                    <div class="stat-number">156</div>
                     <div class="stat-label">總書籍數量</div>
                 </div>
 
@@ -264,8 +292,7 @@
                     <span class="font-medium">新增書籍</span>
                 </a>
 
-                {{-- <a href="{{ route('orders.index') ?? '#' }}" class="action-btn"> --}}
-                <a href="{{ '#' }}" class="action-btn">
+                <a href="#" class="action-btn">
                     <div class="action-icon">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
@@ -274,8 +301,7 @@
                     <span class="font-medium">查看訂單</span>
                 </a>
 
-                {{-- <a href="{{ route('users.index') ?? '#' }}" class="action-btn"> --}}
-                <a href="{{ '#' }}" class="action-btn">
+                <a href="#" class="action-btn">
                     <div class="action-icon">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5 0a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
@@ -284,8 +310,7 @@
                     <span class="font-medium">用戶管理</span>
                 </a>
 
-                {{-- <a href="{{ route('settings') ?? '#' }}" class="action-btn"> --}}
-                <a href="{{ '#' }}" class="action-btn">
+                <a href="#" class="action-btn">
                     <div class="action-icon">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
