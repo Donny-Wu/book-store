@@ -308,8 +308,10 @@
                 <p class="login-subtitle">歡迎回到您的閱讀天堂</p>
             </div>
 
-            <!-- 錯誤訊息 -->
+            <!-- 錯誤訊息
             <x-validation-errors class="error-message" />
+            -->
+            <x-validation-errors class="mb-4" />
 
             <!-- 狀態訊息 -->
             @session('status')
@@ -402,10 +404,10 @@
             const loginButton = document.querySelector('.login-button');
             loginButton.addEventListener('click', function(e) {
                 // 添加載入狀態
-                if (this.form.checkValidity()) {
-                    this.innerHTML = '<span class="loading-spinner"></span>登入中...';
-                    this.disabled = true;
-                }
+                // if (this.form.checkValidity()) {
+                //     this.innerHTML = '<span class="loading-spinner"></span>登入中...';
+                //     this.disabled = true;
+                // }
             });
         });
 
