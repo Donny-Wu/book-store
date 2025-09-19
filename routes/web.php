@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', 'App\Http\Controllers\Web\HomeController@index');
+// Route::get('/', 'App\Http\Controllers\Web\HomeController@index');
+Route::get('/', 'App\Http\Controllers\Web\HomeController@home');
 // Route::get('/', function () {
     // dd('hello');
     // return view('index');
@@ -26,4 +27,6 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
 });
+Route::get('/test',[App\Http\Controllers\Web\TestController::class,'index']);

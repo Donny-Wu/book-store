@@ -13,4 +13,7 @@ class HomeController extends Controller
         // dd(Book::all());
         return view('index',['books'=>Book::all()]);
     }
+    public function home(){
+        return view('home',['books'=>Book::all()]);
+    }
 }
