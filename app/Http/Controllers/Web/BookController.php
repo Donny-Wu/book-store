@@ -19,8 +19,12 @@ class BookController extends Controller
     use HasDataResponse;
 
     public function products(){
-        $books = Book::with(['publisher','language'])->get();
+        $books = Book::with(['publisher','language'])->orderBy('id','desc')->get();
         return view('book.products',compact('books'));
+    }
+    public function dashboard(){
+        $books = Book::with(['publisher','language'])->orderBy('id','desc')->get();
+        return view('book.dashboard',compact('books'));
     }
     /**
      * Display a listing of the resource.

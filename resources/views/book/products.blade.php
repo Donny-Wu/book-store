@@ -1,170 +1,22 @@
-@extends('layouts.dashboard')
+@extends('layouts.common')
 
 @section('content')
 <style>
-    .products-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 2rem;
-        border-bottom: 1px solid rgba(102, 126, 234, 0.1);
-    }
-
-    .search-bar {
-        display: flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.8);
-        border: 2px solid rgba(102, 126, 234, 0.2);
-        border-radius: 12px;
-        padding: 0.5rem 1rem;
-        min-width: 300px;
-        transition: all 0.3s ease;
-    }
-
-    .search-bar:focus-within {
-        border-color: #667eea;
-        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    }
-
-    .search-input {
-        border: none;
-        outline: none;
-        background: transparent;
-        flex: 1;
-        padding: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: #6b7280;
-    }
-
-    .empty-state-icon {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1.5rem;
-    }
-
-    /* 響應式 */
-    @media (max-width: 768px) {
-        .products-header {
-            flex-direction: column;
-            gap: 1rem;
-            align-items: stretch;
-        }
-
-        .products-actions {
-            justify-content: space-between;
-        }
-
-        .search-bar {
-            min-width: auto;
-            flex: 1;
-        }
-
-        .products-grid {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-    }
-
-    /* Dark mode */
-    .dark .product-card {
-        background: rgba(31, 41, 55, 0.95);
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .dark .product-title {
-        color: #f9fafb;
-    }
-
-    .dark .search-bar {
-        background: rgba(31, 41, 55, 0.8);
-        border-color: rgba(102, 126, 234, 0.3);
-    }
-        .products-title {
-        font-size: 1.8rem;
-        font-weight: bold;
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .products-actions {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .btn {
-        padding: 0.75rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-primary {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        color: white;
-    }
-
-    .btn-secondary {
-        background: rgba(102, 126, 234, 0.1);
-        color: #667eea;
-        border: 1px solid rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-secondary:hover {
-        background: rgba(102, 126, 234, 0.2);
-        color: #5a67d8;
-    }
-
-    .products-content {
-        padding: 2rem;
-    }
-
-    .products-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2rem;
-        margin-top: 1rem;
-    }
-
-    .product-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
+    /* Book Card Styles */
+    .book-card {
+        background: white;
+        border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        cursor: pointer;
         position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
-    .product-card::before {
+    .book-card::before {
         content: '';
         position: absolute;
         top: 0;
@@ -175,330 +27,603 @@
         opacity: 0;
         transition: opacity 0.3s ease;
         z-index: 1;
+        border-radius: 15px;
     }
 
-    .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    .book-card:hover::before {
+        opacity: 0.1;
     }
 
-    .product-card:hover::before {
-        opacity: 0.05;
+    .book-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
     }
 
-    .product-image {
+    /* 更新書籍封面樣式 - 使用適應性比例 */
+    .book-cover {
         position: relative;
         width: 100%;
-        height: 200px;
+        padding-top: 133%; /* 3:4 的比例 (書籍常見比例) */
         overflow: hidden;
-        background: linear-gradient(45deg, #f1f3f4, #e8eaed);
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
         z-index: 2;
     }
 
-    .product-image img {
+    .book-cover img {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain; /* 改為 contain 確保圖片完整顯示 */
+        background: #f8f9fa; /* 添加淺灰背景 */
         transition: transform 0.3s ease;
     }
 
-    .product-card:hover .product-image img {
+    .book-card:hover .book-cover img {
         transform: scale(1.05);
     }
 
-    .product-overlay {
+    /* 書籍編號標籤 */
+    .book-badge {
         position: absolute;
-        top: 0;
-        right: 0;
+        top: 10px;
+        right: 10px;
         background: rgba(102, 126, 234, 0.9);
         color: white;
-        padding: 0.5rem;
-        border-radius: 0 0 0 10px;
-        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
         font-weight: 600;
         z-index: 3;
+        backdrop-filter: blur(4px);
     }
 
-    .product-info {
-        padding: 1.5rem;
-        position: relative;
+    /* 無圖片時的占位符 */
+    .book-cover-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #9ca3af;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
         z-index: 2;
     }
 
-    .product-title {
+    .book-cover-placeholder.show {
+        display: flex;
+    }
+
+    .book-cover-placeholder svg {
+        width: 60px;
+        height: 60px;
+        opacity: 0.5;
+    }
+
+    .book-cover-placeholder span {
+        font-size: 0.9rem;
+        opacity: 0.7;
+    }
+
+    /* 新書標籤 */
+    .new-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: linear-gradient(45deg, #f093fb, #f5576c);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        z-index: 3;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .book-info {
+        padding: 1.5rem;
+        position: relative;
+        z-index: 2;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .book-title {
         font-size: 1.1rem;
-        font-weight: 700;
-        color: #2d3748;
+        font-weight: bold;
         margin-bottom: 0.5rem;
+        color: #333;
         line-height: 1.4;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        min-height: 2.8em;
     }
 
-    .product-price {
-        font-size: 1.3rem;
+    .book-author {
+        color: #666;
+        margin-bottom: 0.5rem;
+        font-style: italic;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .book-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        font-size: 0.85rem;
+        color: #6b7280;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .book-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .book-price {
+        font-size: 1.5rem;
         font-weight: bold;
         color: #667eea;
         margin-bottom: 1rem;
     }
 
-    .product-actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
+    .original-price {
+        text-decoration: line-through;
+        color: #9ca3af;
+        font-size: 1rem;
+        margin-right: 0.5rem;
     }
 
-    .action-btn {
-        flex: 1;
-        padding: 0.6rem;
+    .discount-badge {
+        background: #ef4444;
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        margin-left: 0.5rem;
+    }
+
+    .buy-button {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
         border: none;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        font-weight: 600;
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
         cursor: pointer;
         transition: all 0.3s ease;
-        text-align: center;
-        text-decoration: none;
-        display: inline-flex;
+        width: 100%;
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: auto;
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.3rem;
+        gap: 0.5rem;
     }
 
-    .action-edit {
-        background: rgba(59, 130, 246, 0.1);
-        color: #3b82f6;
-        border: 1px solid rgba(59, 130, 246, 0.3);
+    .buy-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     }
 
-    .action-edit:hover {
-        background: rgba(59, 130, 246, 0.2);
-        color: #2563eb;
+    .buy-button svg {
+        width: 20px;
+        height: 20px;
     }
 
-    .action-delete {
-        background: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.3);
+    /* Section Title */
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: bold;
+        position: relative;
+        padding-bottom: 1rem;
     }
 
-    .action-delete:hover {
-        background: rgba(239, 68, 68, 0.2);
-        color: #dc2626;
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 2px;
     }
 
-    .action-view {
-        background: rgba(16, 185, 129, 0.1);
-        color: #10b981;
-        border: 1px solid rgba(16, 185, 129, 0.3);
+    /* Features Section */
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 4rem 0;
     }
 
-    .action-view:hover {
-        background: rgba(16, 185, 129, 0.2);
-        color: #059669;
+    .feature-card {
+        text-align: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 2rem;
+    }
+
+    /* 空狀態樣式 */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        border-radius: 20px;
+        margin: 2rem 0;
+    }
+
+    .empty-state-icon {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+    }
+
+    .empty-state-icon svg {
+        width: 60px;
+        height: 60px;
+        color: #9ca3af;
+    }
+
+    /* 載入動畫 */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-on-scroll {
+        opacity: 0;
+    }
+
+    .animate-on-scroll.visible {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    /* Grid responsive adjustments */
+    @media (max-width: 768px) {
+        .book-cover {
+            padding-top: 140%; /* 稍微調整移動端的比例 */
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .book-title {
+            font-size: 1rem;
+        }
+
+        .book-price {
+            font-size: 1.3rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1rem !important;
+        }
+
+        .book-info {
+            padding: 1rem;
+        }
+
+        .buy-button {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
     }
 </style>
 
-<!-- 頁面標題和操作 -->
-<div class="products-header">
-    <div class="products-title">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-        </svg>
-        書籍管理
-        <span style="font-size: 1rem; opacity: 0.7;">({{ count($books) }} 本書籍)</span>
-    </div>
+<!-- Hero Section -->
+<section class="hero">
+    <h1>發現您的下一本好書</h1>
+    <p>在 BookHaven 探索無限的知識與想像世界</p>
+    <a href="#books" class="cta-button">開始探索</a>
+</section>
 
-    <div class="products-actions">
-        <div class="search-bar">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-            <input type="text" class="search-input" placeholder="搜尋書籍..." id="searchInput">
-        </div>
+<!-- Main Content -->
+<div class="main-content">
+    <h2 class="section-title" id="books">精選書籍</h2>
 
-        <a href="{{ route('book.create') ?? '#' }}" class="btn btn-primary">
-        {{-- <a href="{{ '#' }}" class="btn btn-primary"> --}}
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            新增書籍
-        </a>
-
-        <button class="btn btn-secondary" onclick="toggleView()">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-            </svg>
-            網格視圖
-        </button>
-    </div>
-</div>
-
-<!-- 書籍內容 -->
-<div class="products-content">
     @if(count($books) > 0)
-        <div class="products-grid" id="productsGrid">
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             @foreach($books as $index => $book)
-                <div class="product-card" data-title="{{ strtolower($book->short_title) }}">
-                    <div class="product-image">
-                        <img src="https://picsum.photos/300/400?random={{ $index }}"
-                             alt="{{ $book->short_title }}"
-                             loading="lazy">
-                        <div class="product-overlay">
-                            #{{ str_pad($book->id ?? $index + 1, 3, '0', STR_PAD_LEFT) }}
+                <div class="book-card animate-on-scroll">
+                    <div class="book-cover">
+                        @if($book->image_url)
+                            <img src="{{ $book->image_url }}"
+                                 alt="{{ $book->short_title }}"
+                                 loading="lazy"
+                                 onerror="this.style.display='none'; this.parentElement.querySelector('.book-cover-placeholder').classList.add('show');">
+                        @endif
+                        <div class="book-cover-placeholder {{ !$book->image_url ? 'show' : '' }}">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                                </path>
+                            </svg>
+                            <span>無圖片</span>
                         </div>
+
+                        <!-- 書籍編號 -->
+                        <div class="book-badge">#{{ str_pad($book->id ?? $index + 1, 3, '0', STR_PAD_LEFT) }}</div>
+
+                        <!-- 新書標籤（可選） -->
+                        @if($index < 3)
+                            <div class="new-badge">NEW</div>
+                        @endif
                     </div>
 
-                    <div class="product-info">
-                        <h3 class="product-title">{{ $book->short_title }}</h3>
-                        <div class="product-price">${{ number_format($book->price, 2) }}</div>
+                    <div class="book-info">
+                        <div>
+                            <h3 class="book-title">{{ $book->short_title }}</h3>
 
-                        <div class="product-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 0.85rem; color: #6b7280;">
-                            <span>庫存: {{ $book->stock ?? rand(5, 50) }}</span>
-                            <span>分類: {{ $book->category ?? '一般' }}</span>
+                            <!-- 作者資訊 -->
+                            @if($book->authors && $book->authors->count() > 0)
+                                <p class="book-author">
+                                    {{ $book->authors->pluck('name')->implode(', ') }}
+                                </p>
+                            @else
+                                <p class="book-author">作者資訊</p>
+                            @endif
+
+                            <!-- 元資訊 -->
+                            <div class="book-meta">
+                                @if($book->publisher)
+                                    <span title="出版社">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                            </path>
+                                        </svg>
+                                        {{ $book->publisher_name }}
+                                    </span>
+                                @endif
+
+                                @if($book->stock)
+                                    <span title="庫存">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4">
+                                            </path>
+                                        </svg>
+                                        庫存: {{ $book->stock }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- 價格 -->
+                            <div class="book-price">
+                                @if($book->original_price && $book->original_price > $book->price)
+                                    <span class="original-price">${{ number_format($book->original_price, 2) }}</span>
+                                @endif
+                                ${{ number_format($book->price, 2) }}
+                                @if($book->original_price && $book->original_price > $book->price)
+                                    <span class="discount-badge">
+                                        -{{ round((1 - $book->price / $book->original_price) * 100) }}%
+                                    </span>
+                                @endif
+                            </div>
                         </div>
 
-                        <div class="product-actions">
-                            <a href="{{ route('book.show', $book->id ?? 1) }}" class="action-btn action-view">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                </svg>
-                                查看
-                            </a>
-
-                            <a href="{{ route('book.edit', $book->id ?? 1) }}" class="action-btn action-edit">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                                編輯
-                            </a>
-
-                            <button class="action-btn action-delete" onclick="deleteBook({{ $book->id ?? $index + 1 }})">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                                刪除
-                            </button>
-                        </div>
+                        <button class="buy-button" onclick="addToCart('{{ $book->short_title }}', {{ $book->price }})">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            加入購物車
+                        </button>
                     </div>
                 </div>
             @endforeach
         </div>
     @else
+        <!-- 如果沒有書籍的情況 -->
         <div class="empty-state">
             <div class="empty-state-icon">
-                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+                    </path>
                 </svg>
             </div>
-            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">目前沒有書籍</h3>
-            <p style="margin-bottom: 2rem;">開始添加您的第一本書籍吧！</p>
-            <a href="{{ route('book.create') ?? '#' }}" class="btn btn-primary">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-                新增第一本書
+            <h3 class="text-2xl font-bold text-gray-700 mb-2">目前沒有可用的書籍</h3>
+            <p class="text-gray-500 mb-6">請稍後再來查看我們的最新收藏</p>
+            <a href="/" class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold transition duration-300 hover:shadow-lg hover:scale-105">
+                返回首頁
             </a>
         </div>
     @endif
+
+    <!-- Features Section -->
+    <h2 class="section-title" style="margin-top: 4rem;">為什麼選擇我們</h2>
+
+    <div class="features">
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">📚</div>
+            <h3 class="text-xl font-bold mb-3">精選書籍</h3>
+            <p class="text-gray-600">我們精心挑選每一本書籍，確保為讀者提供最優質的閱讀體驗</p>
+        </div>
+
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">🚚</div>
+            <h3 class="text-xl font-bold mb-3">快速配送</h3>
+            <p class="text-gray-600">24小時內出貨，全台灣免運費，讓您快速收到心愛的書籍</p>
+        </div>
+
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">💎</div>
+            <h3 class="text-xl font-bold mb-3">優惠價格</h3>
+            <p class="text-gray-600">提供最具競爭力的價格，定期推出促銷活動，讓閱讀更加實惠</p>
+        </div>
+
+        <div class="feature-card animate-on-scroll">
+            <div class="feature-icon">⭐</div>
+            <h3 class="text-xl font-bold mb-3">品質保證</h3>
+            <p class="text-gray-600">所有書籍均為正版授權，提供完整的售後服務和品質保障</p>
+        </div>
+    </div>
+
+    <!-- 額外的 CTA Section -->
+    <div class="text-center py-16">
+        <h3 class="text-2xl font-bold mb-4" style="background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            開始您的閱讀之旅
+        </h3>
+        <p class="text-gray-600 mb-8 max-w-2xl mx-auto">
+            無論您喜歡文學小說、專業技能書籍，還是生活品味類讀物，我們都有豐富的選擇等待您的探索。
+        </p>
+        <a href="#books" class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-full font-semibold transition duration-300 hover:shadow-lg hover:scale-105">
+            瀏覽更多書籍
+        </a>
+    </div>
 </div>
 
 <script>
-    // 搜尋功能
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const productCards = document.querySelectorAll('.product-card');
-
-        productCards.forEach(card => {
-            const title = card.getAttribute('data-title');
-            if (title.includes(searchTerm)) {
-                card.style.display = 'block';
-                card.style.animation = 'fadeInUp 0.3s ease-out';
-            } else {
-                card.style.display = 'none';
-            }
+    // 當頁面載入完成後，觸發動畫
+    document.addEventListener('DOMContentLoaded', function() {
+        // 為動畫元素添加觀察器
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         });
 
-        // 顯示搜尋結果數量
-        const visibleCards = document.querySelectorAll('.product-card[style="display: block;"], .product-card:not([style*="display: none"])').length;
-        console.log(`找到 ${visibleCards} 本書籍`);
+        // 觀察所有需要動畫的元素
+        document.querySelectorAll('.animate-on-scroll').forEach((el) => {
+            observer.observe(el);
+        });
+
+        // 書籍卡片載入動畫
+        const bookCards = document.querySelectorAll('.book-card');
+        bookCards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
     });
 
-    // 切換視圖功能
-    function toggleView() {
-        const grid = document.getElementById('productsGrid');
-        const currentCols = grid.style.gridTemplateColumns;
+    // 加入購物車功能
+    function addToCart(title, price) {
+        // 阻止事件冒泡
+        event.stopPropagation();
 
-        if (currentCols === '1fr') {
-            // 切換到網格視圖
-            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
-        } else {
-            // 切換到列表視圖
-            grid.style.gridTemplateColumns = '1fr';
-        }
+        // 這裡可以添加實際的購物車邏輯
+        console.log(`加入購物車: ${title} - $${price}`);
+
+        // 顯示提示訊息
+        showNotification(`已將 "${title}" 加入購物車`);
     }
 
-    // 刪除書籍功能
-    function deleteBook(bookId) {
-        if (confirm('確定要刪除這本書嗎？此操作無法復原。')) {
-            // 這裡可以發送 AJAX 請求到後端
-            console.log(`刪除書籍 ID: ${bookId}`);
+    // 顯示通知功能
+    function showNotification(message) {
+        // 創建通知元素
+        const notification = document.createElement('div');
+        notification.className = 'fixed bottom-4 right-4 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-y-full transition-transform duration-300';
+        notification.textContent = message;
 
-            // 示範動畫移除
-            const card = event.target.closest('.product-card');
-            card.style.animation = 'fadeOut 0.3s ease-out forwards';
+        document.body.appendChild(notification);
+
+        // 顯示通知
+        setTimeout(() => {
+            notification.style.transform = 'translateY(0)';
+        }, 100);
+
+        // 3秒後移除通知
+        setTimeout(() => {
+            notification.style.transform = 'translateY(full)';
             setTimeout(() => {
-                card.remove();
+                document.body.removeChild(notification);
             }, 300);
-        }
+        }, 3000);
     }
 
-    // 添加淡出動畫
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // 頁面載入動畫
+    // 書籍卡片點擊效果
     document.addEventListener('DOMContentLoaded', function() {
-        const cards = document.querySelectorAll('.product-card');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
+        const bookCards = document.querySelectorAll('.book-card');
 
-            setTimeout(() => {
-                card.style.transition = 'all 0.5s ease-out';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 100);
+        bookCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                // 如果點擊的不是按鈕，則可以添加查看詳情的功能
+                if (!e.target.closest('.buy-button')) {
+                    // 獲取書籍標題
+                    const title = this.querySelector('.book-title').textContent;
+                    console.log(`查看書籍詳情: ${title}`);
+                    // 這裡可以添加跳轉到書籍詳情頁的邏輯
+                }
+            });
+        });
+    });
+
+    // 圖片載入錯誤處理
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.book-cover img');
+        images.forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                const placeholder = this.parentElement.querySelector('.book-cover-placeholder');
+                if (placeholder) {
+                    placeholder.classList.add('show');
+                }
+            });
         });
     });
 </script>
 
 @endsection
-
-

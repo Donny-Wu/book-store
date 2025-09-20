@@ -26,7 +26,7 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->instance(LoginResponse::class, new class implements LoginResponse {
             public function toResponse($request): RedirectResponse
             {
-                return redirect(route('book.products'));
+                return redirect(route('dashboard'));
             }
         });
     }
