@@ -5,16 +5,12 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', 'App\Http\Controllers\Web\HomeController@index');
 // Route::get('/', 'App\Http\Controllers\Web\HomeController@home');
 Route::get('/', [\App\Http\Controllers\Web\BookController::class, 'products'])->name('book.products');
-// Route::get('/', function () {
-    // dd('hello');
-    // return view('index');
-    // return view('welcome');
-    // return view('kool_form.login');
+Route::get('/checkout', [\App\Http\Controllers\Web\OrderController::class, 'create'])->name('order.checkout');
+
+// Route::get('/template/{temp_name}',function($temp_name){
+//     // dd('template.'.$temp_name);
+//     return view('template.'.$temp_name);
 // });
-Route::get('/template/{temp_name}',function($temp_name){
-    // dd('template.'.$temp_name);
-    return view('template.'.$temp_name);
-});
 
 Route::middleware([
     'auth:sanctum',

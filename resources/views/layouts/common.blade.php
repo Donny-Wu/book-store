@@ -701,7 +701,7 @@
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             alert(`準備結帳\n總金額: $${total.toFixed(2)}`);
             // 這裡可以導向結帳頁面
-            // window.location.href = '/checkout';
+            window.location.href = '/checkout';
         }
 
         // 修改原有的 showNotification 函數
