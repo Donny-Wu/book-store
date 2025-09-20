@@ -13,10 +13,12 @@ use App\Models\Publisher;
 use App\Models\BookMaker;
 use App\Models\Author;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\HasApiResponse;
 
 class BookController extends Controller
 {
     use HasDataResponse;
+    use HasApiResponse;
 
     public function products(){
         $books = Book::with(['publisher','language'])->orderBy('id','desc')->get();
@@ -158,6 +160,42 @@ class BookController extends Controller
     public function destroy(string $id)
     {
         //
+        try{
+            $book = Book::findOrFail($id);
+            if($book->image){
+                $this->deleteImage($book->image);
+            }
+            $book->authors()->detach();
+            $book->delete();
+
+            if(request()->ajax()){
+                return $this->apiSuccess('書籍刪除成功', []);
+            }
+            $response = [
+                'icon'  => 'success',
+                'title' => '書籍刪除成功',
+                'text'  => '書籍刪除成功',
+            ];
+
+            return redirect(route('dashboard'))->with(compact(
+                'response'
+            ));
+
+        }catch(\Exception $e){
+            $message = '刪除失敗：' . $e->getMessage();
+            if(request()->ajax()){
+                return $this->apiError($message, []);
+            }
+            $response = [
+                'icon'  => 'error',
+                'title' => '書籍刪除失敗',
+                'text'  => $message,
+            ];
+
+            return redirect(route('dashboard'))->with(compact(
+                'response'
+            ));
+        }
     }
     /**
      * Summary of uploadImage

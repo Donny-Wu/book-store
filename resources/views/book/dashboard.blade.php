@@ -487,7 +487,7 @@
                                 編輯
                             </a>
 
-                            <button class="action-btn action-delete" onclick="deleteBook({{ $book->id ?? $index + 1 }})">
+                            <button class="action-btn action-delete" onclick="deleteBook({{ $book->id ?? null }})">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                 </svg>
@@ -553,25 +553,88 @@
         }
     }
 
-    // 刪除書籍功能
+        // 刪除書籍功能
     function deleteBook(bookId) {
         if (confirm('確定要刪除這本書嗎？此操作無法復原。')) {
-            // 這裡可以發送 AJAX 請求到後端
-            console.log(`刪除書籍 ID: ${bookId}`);
+            // 獲取 CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-            // 示範動畫移除
+            if (!token) {
+                alert('CSRF token 未找到，請重新整理頁面');
+                return;
+            }
+
+            // 顯示載入狀態
             const card = event.target.closest('.product-card');
-            card.style.animation = 'fadeOut 0.3s ease-out forwards';
-            setTimeout(() => {
-                card.remove();
+            console.log(card);
+            const originalOpacity = card.style.opacity;
+            card.style.opacity = '0.5';
+            card.style.pointerEvents = 'none';
 
-                // 更新書籍數量
-                const bookCount = document.querySelectorAll('.product-card').length - 1;
-                const countSpan = document.querySelector('.products-title span');
-                if (countSpan) {
-                    countSpan.textContent = `(${bookCount} 本書籍)`;
+            // 發送 AJAX 請求
+            fetch(`/book/${bookId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            }, 300);
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                if (data.code==200) {
+                    // 成功刪除，移除卡片
+                    // 顯示成功訊息
+                    // showNotification('success', data.message || '書籍刪除成功');
+                    Swal.fire({
+                        icon:  'success',
+                        title: data.message || '書籍刪除成功',
+                        text:  data.message || '書籍刪除成功'
+                    }).then((result) => {
+                        card.style.animation = 'fadeOut 0.3s ease-out forwards';
+                        card.remove();
+                            // 更新書籍數量
+                            const remainingCards = document.querySelectorAll('.product-card').length;
+                            const countSpan = document.querySelector('.products-title span');
+                            if (countSpan) {
+                                countSpan.textContent = `(${remainingCards} 本書籍)`;
+                            }
+                            // 如果沒有書籍了，顯示空狀態
+                            if (remainingCards === 0) {
+                                location.reload(); // 重新載入頁面以顯示空狀態
+                            }
+                    });
+                } else {
+                    // 恢復卡片狀態
+                    card.style.opacity = originalOpacity;
+                    card.style.pointerEvents = 'auto';
+                    // showNotification('error', data.message || '刪除失敗');
+                    Swal.fire({
+                        icon:  'error',
+                        title: data.message || '刪除失敗',
+                        text:  data.message || '刪除失敗'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('刪除錯誤:', error);
+                // 恢復卡片狀態
+                card.style.opacity = originalOpacity;
+                card.style.pointerEvents = 'auto';
+                Swal.fire({
+                        icon:  'error',
+                        title: '刪除失敗，請稍後再試',
+                        text:  '刪除失敗，請稍後再試'
+                });
+                // showNotification('error', '刪除失敗，請稍後再試');
+            });
         }
     }
 
