@@ -5,6 +5,8 @@
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(102, 126, 234, 0.1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: relative;
+            z-index: 99999;
         }
 
         .dark .modern-nav {
@@ -150,6 +152,43 @@
         .nav-link-modern.active .nav-icon {
             opacity: 1;
         }
+        /* 在 navigation-menu.blade.php 的 <style> 區塊中添加以下 CSS */
+
+        /* Teams Dropdown 修正 */
+        .teams-dropdown-wrapper {
+            position: relative;
+            z-index: 999999; /* 比 navigation 的 99999 更高 */
+        }
+
+        /* 確保 dropdown 內容有正確的定位和層級 */
+        .teams-dropdown-content {
+            position: absolute;
+            z-index: 999999;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            min-width: 240px;
+            overflow: hidden;
+        }
+
+        .dark .teams-dropdown-content {
+            background: rgba(26, 32, 44, 0.95);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        /* 修正 dropdown trigger */
+        .teams-dropdown-trigger {
+            position: relative;
+            z-index: 999999;
+        }
+
+        /* 如果使用 Alpine.js 的 x-dropdown，確保它有正確的層級 */
+        [x-data] > div[x-show] {
+            z-index: 999999 !important;
+        }
     </style>
 
     <!-- Primary Navigation Menu -->
@@ -171,8 +210,8 @@
 
                     <!-- Enhanced Navigation Links -->
                     <div class="hidden space-x-2 sm:-my-px sm:ms-10 sm:flex">
-                        <a href="{{ route('book.products') }}"
-                           class="nav-link-modern {{ request()->routeIs('book.products') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard') }}"
+                           class="nav-link-modern {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                             <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v2H8V5z"></path>
@@ -217,11 +256,11 @@
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
                     <!-- Teams Dropdown -->
                     @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
-                        <div class="ms-3 relative">
+                        <div class="ms-3 relative teams-dropdown-wrapper">
                             <x-dropdown align="right" width="60">
                                 <x-slot name="trigger">
                                     <span class="inline-flex rounded-md">
-                                        <button type="button" class="user-dropdown-trigger">
+                                        <button type="button" class="user-dropdown-trigger teams-dropdown-trigger">
                                             {{ Auth::user()->currentTeam->name }}
                                             <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
@@ -231,13 +270,12 @@
                                 </x-slot>
 
                                 <x-slot name="content">
-                                    <div class="w-60">
-                                        <!-- Team Management -->
+                                    <div class="w-60 teams-dropdown-content">
+                                        <!-- 其餘內容保持不變 -->
                                         <div class="block px-4 py-2 text-xs text-gray-400">
                                             {{ __('Manage Team') }}
                                         </div>
 
-                                        <!-- Team Settings -->
                                         <x-dropdown-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}">
                                             {{ __('Team Settings') }}
                                         </x-dropdown-link>
@@ -248,7 +286,6 @@
                                             </x-dropdown-link>
                                         @endcan
 
-                                        <!-- Team Switcher -->
                                         @if (Auth::user()->allTeams()->count() > 1)
                                             <div class="border-t border-gray-200 dark:border-gray-600"></div>
 
@@ -341,7 +378,7 @@
 
         <!-- Responsive Navigation Menu -->
         <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-            <div class="pt-2 pb-3 space-y-1 px-4">
+            {{-- <div class="pt-2 pb-3 space-y-1 px-4">
                 <a href="{{ route('dashboard') }}"
                    class="nav-link-modern w-full {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     {{ __('Dashboard') }}
@@ -361,7 +398,7 @@
                    class="nav-link-modern w-full {{ request()->routeIs('book.index') ? 'active' : '' }}">
                     書籍清單
                 </a>
-            </div>
+            </div> --}}
 
             <!-- Responsive Settings Options -->
             <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
