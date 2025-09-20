@@ -16,7 +16,7 @@ class Book extends Model
         if($this->image){
             return Storage::disk('public')->url($this->image);
         }
-        return asset('images/default-book.jpg');
+        return asset('images/default-book-image.jpg');
     }
     public function authors(){
         return $this->belongsToMany(Author::class,'book_author');
