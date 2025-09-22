@@ -462,7 +462,7 @@
                         <div class="product-price">${{ number_format($book->price, 2) }}</div>
 
                         <div class="product-meta">
-                            <span>庫存: {{ $book->stock ?? rand(5, 50) }}</span>
+                            <span>庫存: {{ $book->stock_qty }}</span>
                             @if($book->publisher)
                                 <span>{{ $book->publisher_name }}</span>
                             @endif

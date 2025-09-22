@@ -468,7 +468,28 @@
                                     </div>
                                 @endif
                             </div>
-
+                            <!-- 定價 -->
+                            <div class="form-group col-3">
+                                <label for="stock_qty" class="form-label">
+                                    庫存 <span class="required">*</span>
+                                </label>
+                                <input type="number"
+                                       name="stock_qty"
+                                       id="stock_qty"
+                                       class="form-input"
+                                       value="{{ $book->stock_qty ?? old('stock_qty', 0) }}"
+                                       step="1"
+                                       min="0"
+                                       placeholder="0">
+                                @if($errors->has('stock_qty'))
+                                    <div class="error-message">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        {{ $errors->get('stock_qty')[0] }}
+                                    </div>
+                                @endif
+                            </div>
                             <!-- 出版日期 -->
                             <div class="form-group col-6">
                                 <label for="published_at" class="form-label">出版日期</label>
