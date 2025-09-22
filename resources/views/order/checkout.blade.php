@@ -392,6 +392,9 @@
                     @csrf
                     <input type="hidden" id="shippingMethod" name="shipping_method" value="1">
                     <input type="hidden" id="paymentMethod" name="payment_method" value="1">
+                    <input type="hidden" id="total_price" name="total_price" value="0">
+                    <input type="hidden" id="shipping_fee" name="shipping_fee" value="0">
+                    <input type="hidden" id="final_price" name="final_price" value="0">
 
                     <div class="form-group">
                         <label class="form-label">
@@ -416,7 +419,7 @@
 
                     <div class="form-group">
                         <label class="form-label">備註</label>
-                        <textarea class="form-input" id="orderNote" name="order_note" rows="2" placeholder="特殊需求或備註事項（選填）" style="resize: vertical;"></textarea>
+                        <textarea class="form-input" id="orderNote" name="consumer_note" rows="2" placeholder="特殊需求或備註事項（選填）" style="resize: vertical;"></textarea>
                     </div>
 
                     <!-- 儲存配送地址選項（會員專用） -->
@@ -550,7 +553,6 @@
     ];
 
     let currentMember = null;
-    let shippingCost = 0;
 
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
@@ -571,12 +573,12 @@
         if (savedCart) {
             const cart = JSON.parse(savedCart);
             const orderItemsContainer = document.getElementById('orderItems');
-            
+
             if (cart.length === 0) {
                 orderItemsContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">購物車是空的</p>';
                 return;
             }
-            
+
             orderItemsContainer.innerHTML = cart.map(item => `
                 <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
                     <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
@@ -588,7 +590,7 @@
                             ${item.author ? `<div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.5rem;">${item.author}</div>` : ''}
                         </div>
                     </div>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; font-size: 0.85rem; text-align: center;">
                         <div>
                             <div style="color: #6b7280; margin-bottom: 0.25rem;">數量</div>
@@ -611,13 +613,16 @@
     function updateOrderSummary() {
         const savedCart = localStorage.getItem('bookhavenCart');
         if (savedCart) {
-            const cart = JSON.parse(savedCart);
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const total = subtotal + shippingCost;
+            const cart          = JSON.parse(savedCart);
+            const shipping_fee  = Number(document.getElementById('shipping_fee').value) || 0;
+            const total_price   = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const final_price   = total_price + shipping_fee;
+            document.getElementById('total_price').value = total_price;
+            document.getElementById('final_price').value = final_price;
 
-            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById('shippingFee').textContent = shippingCost === 0 ? '免費' : `$${shippingCost.toFixed(2)}`;
-            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('subtotal').textContent     = `$${total_price.toFixed(2)}`;
+            document.getElementById('shippingFee').textContent  = shipping_fee === 0 ? '免費' : `${shipping_fee.toFixed(2)}`;
+            document.getElementById('total').textContent        = `$${final_price.toFixed(2)}`;
         }
     }
 
@@ -646,7 +651,7 @@
         document.getElementById('shippingMethod').value = shippingId;
 
         // 更新運費
-        shippingCost = cost;
+        document.getElementById('shipping_fee').value = cost;
         updateOrderSummary();
     }
 
@@ -668,28 +673,22 @@
 
         // 將購物車資料添加到表單中
         const cart = JSON.parse(savedCart);
+        const orderItems = cart.map(item => ({
+            id: item.id,
+            price: item.price,
+            quantity: item.quantity
+        }));
         const form = document.getElementById('checkoutForm');
-
         // 移除之前可能添加的隱藏欄位
         const existingCartInput = form.querySelector('input[name="cart_items"]');
-        const existingTotalInput = form.querySelector('input[name="total_amount"]');
         if (existingCartInput) existingCartInput.remove();
-        if (existingTotalInput) existingTotalInput.remove();
 
         // 添加購物車資料
         const cartInput     = document.createElement('input');
         cartInput.type      = 'hidden';
         cartInput.name      = 'cart_items';
-        cartInput.value     = JSON.stringify(cart);
+        cartInput.value     = JSON.stringify(orderItems);
         form.appendChild(cartInput);
-
-        // 添加總金額
-        const total         = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + shippingCost;
-        const totalInput    = document.createElement('input');
-        totalInput.type     = 'hidden';
-        totalInput.name     = 'total_amount';
-        totalInput.value    = total;
-        form.appendChild(totalInput);
         // 設置表單的 action 和 method
         form.action = '{{ route("order.store") }}';
         form.method = 'POST';
