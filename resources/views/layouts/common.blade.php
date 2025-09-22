@@ -458,6 +458,7 @@
     </style>
 </head>
 <body class="font-sans antialiased">
+    <x-imports.sweetalert2 />
     <header class="header">
         <nav class="nav">
             <div class="logo">BookHaven</div>
