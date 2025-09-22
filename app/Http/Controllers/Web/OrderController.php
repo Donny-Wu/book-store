@@ -11,4 +11,7 @@ class OrderController extends Controller
     public function create(){
         return view('order.checkout');
     }
+    public function store(Request $request){
+        dd($request->all());
+    }
 }

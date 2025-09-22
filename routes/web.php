@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/', 'App\Http\Controllers\Web\HomeController@index');
 // Route::get('/', 'App\Http\Controllers\Web\HomeController@home');
 Route::get('/', [\App\Http\Controllers\Web\BookController::class, 'products'])->name('book.products');
-Route::get('/checkout', [\App\Http\Controllers\Web\OrderController::class, 'create'])->name('order.checkout');
+Route::get('/checkout', [\App\Http\Controllers\Web\OrderController::class, 'create'])->name('order.create');
+Route::post('/order/store', [\App\Http\Controllers\Web\OrderController::class, 'store'])->name('order.store');
 
 // Route::get('/template/{temp_name}',function($temp_name){
 //     // dd('template.'.$temp_name);

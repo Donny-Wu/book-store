@@ -388,63 +388,35 @@
                     <h2 class="section-title">配送資訊</h2>
                 </div>
 
-                <form id="shippingForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">
-                                姓氏 <span class="required">*</span>
-                            </label>
-                            <input type="text" class="form-input" id="lastName" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">
-                                名字 <span class="required">*</span>
-                            </label>
-                            <input type="text" class="form-input" id="firstName" required>
-                        </div>
+                <form id="checkoutForm">
+                    @csrf
+                    <input type="hidden" id="shippingMethod" name="shipping_method" value="1">
+                    <input type="hidden" id="paymentMethod" name="payment_method" value="1">
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            收件人姓名 <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-input" id="recipientName" name="recipient_name" value="Alex Lee" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">
-                            電子郵件 <span class="required">*</span>
+                            收件人電話 <span class="required">*</span>
                         </label>
-                        <input type="email" class="form-input" id="email" required>
+                        <input type="tel" class="form-input" id="recipientPhone" name="recipient_phone" placeholder="0912-345-678" value="0912345678"required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">
-                            手機號碼 <span class="required">*</span>
+                            配送地址 <span class="required">*</span>
                         </label>
-                        <input type="tel" class="form-input" id="phone" placeholder="0912-345-678" required>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">
-                                縣市 <span class="required">*</span>
-                            </label>
-                            <select class="form-input" id="city" required style="cursor: pointer;">
-                                <option value="">請選擇縣市</option>
-                                <option value="taipei">台北市</option>
-                                <option value="new-taipei">新北市</option>
-                                <option value="taichung">台中市</option>
-                                <option value="tainan">台南市</option>
-                                <option value="kaohsiung">高雄市</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">
-                                郵遞區號 <span class="required">*</span>
-                            </label>
-                            <input type="text" class="form-input" id="zipCode" placeholder="100" required>
-                        </div>
+                        <input type="text" class="form-input" id="shippingAddress" name="shipping_address"  value="110台北市信義區信義路五段7號89樓" placeholder="請輸入完整配送地址" required style="resize: vertical;"></input>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">
-                            詳細地址 <span class="required">*</span>
-                        </label>
-                        <input type="text" class="form-input" id="address" placeholder="請輸入街道名稱、門牌號碼等" required>
+                        <label class="form-label">備註</label>
+                        <textarea class="form-input" id="orderNote" name="order_note" rows="2" placeholder="特殊需求或備註事項（選填）" style="resize: vertical;"></textarea>
                     </div>
 
                     <!-- 儲存配送地址選項（會員專用） -->
@@ -463,24 +435,32 @@
                     <div class="section-number">2</div>
                     <h2 class="section-title">配送方式</h2>
                 </div>
-
                 <div class="shipping-options">
-                    <div class="shipping-option selected" onclick="selectShipping(this, 'standard', 0)">
+                    <div class="shipping-option selected" onclick="selectShipping(this, 1, 0)">
                         <input type="radio" name="shipping" checked style="accent-color: #667eea;">
                         <div style="flex: 1;">
-                            <div style="font-weight: 600; color: #333;">標準配送</div>
+                            <div style="font-weight: 600; color: #333;">宅配到府</div>
                             <div style="font-size: 0.85rem; color: #6b7280;">5-7 個工作天</div>
                         </div>
                         <div style="font-weight: bold; color: #667eea;">免費</div>
                     </div>
 
-                    <div class="shipping-option" onclick="selectShipping(this, 'express', 60)">
+                    <div class="shipping-option" onclick="selectShipping(this, 2, 30)">
                         <input type="radio" name="shipping" style="accent-color: #667eea;">
                         <div style="flex: 1;">
-                            <div style="font-weight: 600; color: #333;">快速配送</div>
-                            <div style="font-size: 0.85rem; color: #6b7280;">2-3 個工作天</div>
+                            <div style="font-weight: 600; color: #333;">超商取貨</div>
+                            <div style="font-size: 0.85rem; color: #6b7280;">3-5 個工作天</div>
                         </div>
-                        <div style="font-weight: bold; color: #667eea;">$60</div>
+                        <div style="font-weight: bold; color: #667eea;">$30</div>
+                    </div>
+
+                    <div class="shipping-option" onclick="selectShipping(this, 3, 45)">
+                        <input type="radio" name="shipping" style="accent-color: #667eea;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: #333;">郵局取貨</div>
+                            <div style="font-size: 0.85rem; color: #6b7280;">4-6 個工作天</div>
+                        </div>
+                        <div style="font-weight: bold; color: #667eea;">$45</div>
                     </div>
                 </div>
             </div>
@@ -490,16 +470,19 @@
                     <div class="section-number">3</div>
                     <h2 class="section-title">付款方式</h2>
                 </div>
-
                 <div class="payment-methods">
-                    <div class="payment-method selected" onclick="selectPayment(this, 'credit-card')">
+                    <div class="payment-method selected" onclick="selectPayment(this, 1)">
+                        <div style="font-size: 2rem;">💰</div>
+                        <div style="font-weight: 500; color: #333;">現金付款</div>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment(this, 2)">
                         <div style="font-size: 2rem;">💳</div>
                         <div style="font-weight: 500; color: #333;">信用卡</div>
                     </div>
 
-                    <div class="payment-method" onclick="selectPayment(this, 'line-pay')">
-                        <div style="font-size: 2rem;">📱</div>
-                        <div style="font-weight: 500; color: #333;">LINE Pay</div>
+                    <div class="payment-method" onclick="selectPayment(this, 3)">
+                        <div style="font-size: 2rem;">🏦</div>
+                        <div style="font-weight: 500; color: #333;">銀行轉帳</div>
                     </div>
                 </div>
             </div>
@@ -515,7 +498,7 @@
                 <!-- 動態生成商品列表 -->
             </div>
 
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 2px solid #e5e7eb;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem;">
                     <span>商品小計</span>
                     <span id="subtotal">$0.00</span>
@@ -528,9 +511,9 @@
                     <span>總計</span>
                     <span style="color: #667eea;" id="total">$0.00</span>
                 </div>
-            </div>
+        </div>
 
-            <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn" style="margin-top: 2rem;">
+            <button class="place-order-btn" onclick="submitOrder()" id="" style="margin-top: 2rem;">
                 確認訂單
             </button>
 
@@ -582,6 +565,137 @@
         loadOrderItems();
         updateOrderSummary();
     });
+    // 載入購物車商品到結帳頁面
+    function loadOrderItems() {
+        const savedCart = localStorage.getItem('bookhavenCart');
+        if (savedCart) {
+            const cart = JSON.parse(savedCart);
+            const orderItemsContainer = document.getElementById('orderItems');
+            
+            if (cart.length === 0) {
+                orderItemsContainer.innerHTML = '<p style="text-align: center; color: #6b7280;">購物車是空的</p>';
+                return;
+            }
+            
+            orderItemsContainer.innerHTML = cart.map(item => `
+                <div style="padding: 1rem; border-bottom: 1px solid #e5e7eb;">
+                    <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                        <div style="width: 50px; height: 60px; background: #f3f4f6; border-radius: 5px; overflow: hidden; flex-shrink: 0;">
+                            ${item.imageUrl ? `<img src="${item.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;">` : '<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-size: 1.2rem;">📚</div>'}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; line-height: 1.3;">${item.title}</div>
+                            ${item.author ? `<div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.5rem;">${item.author}</div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; font-size: 0.85rem; text-align: center;">
+                        <div>
+                            <div style="color: #6b7280; margin-bottom: 0.25rem;">數量</div>
+                            <div style="font-weight: 600;">${item.quantity}</div>
+                        </div>
+                        <div>
+                            <div style="color: #6b7280; margin-bottom: 0.25rem;">單價</div>
+                            <div style="font-weight: 600; color: #667eea;">$${item.price.toFixed(2)}</div>
+                        </div>
+                        <div>
+                            <div style="color: #6b7280; margin-bottom: 0.25rem;">小計</div>
+                            <div style="font-weight: 600; color: #667eea;">$${(item.price * item.quantity).toFixed(2)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+    // 更新訂單摘要
+    function updateOrderSummary() {
+        const savedCart = localStorage.getItem('bookhavenCart');
+        if (savedCart) {
+            const cart = JSON.parse(savedCart);
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const total = subtotal + shippingCost;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('shippingFee').textContent = shippingCost === 0 ? '免費' : `$${shippingCost.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        }
+    }
+
+    function selectPayment(element, paymentId) {
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.classList.remove('selected');
+        });
+        element.classList.add('selected');
+
+        // 更新 hidden input 的值
+        document.getElementById('paymentMethod').value = paymentId;
+    }
+
+    function selectShipping(element, shippingId, cost) {
+        // 移除所有選中狀態
+        document.querySelectorAll('.shipping-option').forEach(option => {
+            option.classList.remove('selected');
+            option.querySelector('input[type="radio"]').checked = false;
+        });
+
+        // 設置選中狀態
+        element.classList.add('selected');
+        element.querySelector('input[type="radio"]').checked = true;
+
+        // 更新 hidden input 的值
+        document.getElementById('shippingMethod').value = shippingId;
+
+        // 更新運費
+        shippingCost = cost;
+        updateOrderSummary();
+    }
+
+    function submitOrder(){
+        const savedCart = localStorage.getItem('bookhavenCart');
+        if (!savedCart || JSON.parse(savedCart).length === 0) {
+            alert('購物車是空的！');
+            return;
+        }
+
+        // 驗證必填欄位
+        const requiredFields = ['recipientName', 'recipientPhone', 'shippingAddress'];
+        for (let field of requiredFields) {
+            if (!document.getElementById(field).value.trim()) {
+                alert('請填寫所有必填欄位');
+                return;
+            }
+        }
+
+        // 將購物車資料添加到表單中
+        const cart = JSON.parse(savedCart);
+        const form = document.getElementById('checkoutForm');
+
+        // 移除之前可能添加的隱藏欄位
+        const existingCartInput = form.querySelector('input[name="cart_items"]');
+        const existingTotalInput = form.querySelector('input[name="total_amount"]');
+        if (existingCartInput) existingCartInput.remove();
+        if (existingTotalInput) existingTotalInput.remove();
+
+        // 添加購物車資料
+        const cartInput     = document.createElement('input');
+        cartInput.type      = 'hidden';
+        cartInput.name      = 'cart_items';
+        cartInput.value     = JSON.stringify(cart);
+        form.appendChild(cartInput);
+
+        // 添加總金額
+        const total         = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + shippingCost;
+        const totalInput    = document.createElement('input');
+        totalInput.type     = 'hidden';
+        totalInput.name     = 'total_amount';
+        totalInput.value    = total;
+        form.appendChild(totalInput);
+        // 設置表單的 action 和 method
+        form.action = '{{ route("order.store") }}';
+        form.method = 'POST';
+        // 提交表單
+        form.submit();
+    }
 
     // 切換登入/註冊
     function switchAuth(type) {
