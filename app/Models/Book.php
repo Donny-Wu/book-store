@@ -12,6 +12,30 @@ class Book extends Model
     use HasFactory;
     //
     protected $guarded = [];
+    protected $casts = [
+        'price'             => 'decimal:2',
+        'publication_date'  => 'date',
+    ];
+    public function orders(){
+        return $this->belongsToMany(Order::class, 'book_orders')
+                    ->withPivot('quantity', 'unit_price', 'subtotal')
+                    ->withTimestamps();
+    }
+    public function hasStock($qty=1){
+        return $this->stock_qty >= $qty;
+    }
+    // 減少庫存
+    public function reduceStock($qty){
+        if ($this->hasStock($qty)) {
+            $this->decrement('stock_qty', $qty);
+            return true;
+        }
+        return false;
+    }
+    // 增加庫存
+    public function increaseStock($qty){
+        $this->increment('stock_qty', $qty);
+    }
     public function getImageUrlAttribute(){
         if($this->image){
             return Storage::disk('public')->url($this->image);
