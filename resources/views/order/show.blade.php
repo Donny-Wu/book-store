@@ -1,5 +1,4 @@
-@extends('layouts.dashboard')
-
+@extends('layouts.page')
 @section('content')
 <div class="container mx-auto px-4 py-6">
     <!-- 頁面標題和返回按鈕 -->
