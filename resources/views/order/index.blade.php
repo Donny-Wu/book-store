@@ -395,15 +395,27 @@ document.getElementById('status-form').addEventListener('submit', function(e) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('狀態更新成功');
+            Swal.fire({
+                icon:  'success',
+                title: '狀態更新成功',
+                text:  data.message
+            });
             location.reload();
         } else {
-            alert('更新失敗：' + data.message);
+            Swal.fire({
+                icon:  'error',
+                title: '更新失敗，請重試',
+                text:  data.message
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('更新失敗，請重試');
+        Swal.fire({
+            icon:  'error',
+            title: '更新失敗，請重試',
+            text:  '更新失敗，請重試'
+        });
     });
 
     hideStatusModal();

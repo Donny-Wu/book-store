@@ -9,6 +9,7 @@ use App\Models\Order;
 use Exception;
 use DB;
 use App\Enum\OrderStatus;
+use App\Enum\PaymentStatus;
 
 class OrderController extends Controller
 {
@@ -184,9 +185,7 @@ class OrderController extends Controller
             }
 
             $order->save();
-
-            if ($request->ajax()) {
-                return response()->json([
+            return response()->json([
                     'success' => true,
                     'message' => '訂單狀態更新成功',
                     'status' => [
@@ -194,20 +193,15 @@ class OrderController extends Controller
                         'label' => $order->status->label(),
                         'color' => $order->status->color()
                     ]
-                ]);
-            }
-
-            return redirect()->back()->with('success', '訂單狀態更新成功');
+            ]);
+            // return redirect()->back()->with('success', '訂單狀態更新成功');
 
         } catch (Exception $e) {
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => '更新失敗：' . $e->getMessage()
-                ], 400);
-            }
-
-            return redirect()->back()->with('error', '更新失敗：' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => '更新失敗：' . $e->getMessage()
+            ], 400);
+            // return redirect()->back()->with('error', '更新失敗：' . $e->getMessage());
         }
     }
 
