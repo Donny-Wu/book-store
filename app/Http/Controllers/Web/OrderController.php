@@ -10,9 +10,11 @@ use Exception;
 use DB;
 use App\Enum\OrderStatus;
 use App\Enum\PaymentStatus;
+use App\Traits\HasApiResponse;
 
 class OrderController extends Controller
 {
+    use HasApiResponse;
     //
     public function create(){
         return view('order.checkout');
@@ -159,6 +161,16 @@ class OrderController extends Controller
 
         return view('order.show', compact('order'));
     }
+    public function updateAdminNote(Request $request, Order $order){
+        try{
+            $order->admin_note = $request->admin_note;
+            $order->save();
+            return $this->apiSuccess('備註更新成功', []);
+        }catch(Exception $e){
+            return $this->apiError('備註更新失敗:' . $e->getMessage());
+        }
+        
+    }
     /**
      * 更新訂單狀態
      */
@@ -176,14 +188,7 @@ class OrderController extends Controller
             if (!$order->status->canTransitionTo($newStatus)) {
                 throw new Exception("無法從 {$order->status->label()} 轉換到 {$newStatus->label()}");
             }
-
             $order->status = $newStatus;
-
-            // 更新管理員備註
-            if ($request->filled('admin_note')) {
-                $order->admin_note = $request->admin_note;
-            }
-
             $order->save();
             return response()->json([
                     'success' => true,

@@ -27,6 +27,8 @@ Route::middleware([
     Route::get('/order/index', [OrderController::class, 'index'])->name('order.index');
     // 訂單詳情
     Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
+    // 更新管理者備註
+    Route::post('/order/{order}/admin-note', [OrderController::class, 'updateAdminNote'])->name('order.update-admin-note');
     // 更新訂單狀態
     Route::post('/order/{order}/status', [OrderController::class, 'updateStatus'])->name('order.update-status');
     // 更新付款狀態

@@ -290,9 +290,6 @@
         </div>
     </div>
 </div>
-@endsection
-
-@push('scripts')
 <script>
 // 更新訂單狀態
 function updateOrderStatus(orderId, statusValue) {
@@ -300,7 +297,7 @@ function updateOrderStatus(orderId, statusValue) {
         return;
     }
 
-    fetch(`/admin/orders/${orderId}/status`, {
+    fetch(`{{ route("order.update-status", ["order" => $order]) }}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -314,15 +311,27 @@ function updateOrderStatus(orderId, statusValue) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('狀態更新成功');
+            Swal.fire({
+                icon:  'success',
+                title: '狀態更新成功',
+                text:  data.message
+            });
             location.reload();
         } else {
-            alert('更新失敗：' + data.message);
+            Swal.fire({
+                icon:  'error',
+                title: '更新失敗，請重試',
+                text:  data.message
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('更新失敗，請重試');
+        Swal.fire({
+            icon:  'error',
+            title: '更新失敗，請重試',
+            text:  '更新失敗，請重試'
+        });
     });
 }
 
@@ -332,7 +341,7 @@ document.getElementById('admin-note-form').addEventListener('submit', function(e
 
     const formData = new FormData(this);
 
-    fetch(`/admin/orders/{{ $order->id }}/status`, {
+    fetch(`{{ route("order.update-admin-note", ["order" => $order]) }}`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -342,16 +351,31 @@ document.getElementById('admin-note-form').addEventListener('submit', function(e
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            alert('備註已儲存');
+        if (data.code==200) {
+            Swal.fire({
+                icon:  'success',
+                title: '備註儲存成功',
+                text:  data.message
+            }).then((result) => {
+                location.reload();
+            });
+            // location.reload();
         } else {
-            alert('儲存失敗：' + data.message);
+            Swal.fire({
+                icon:  'error',
+                title: '備註儲存失敗，請重試',
+                text:  data.message
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('儲存失敗，請重試');
+        Swal.fire({
+                icon:  'error',
+                title: '備註儲存失敗，請重試',
+                text:  '備註儲存失敗，請重試'
+        });
     });
 });
 </script>
-@endpush
+@endsection
