@@ -516,7 +516,7 @@
                 </div>
         </div>
 
-            <button class="place-order-btn" onclick="submitOrder()" id="" style="margin-top: 2rem;">
+            <button class="place-order-btn" onclick="submitOrder(this)" id="" style="margin-top: 2rem;">
                 確認訂單
             </button>
 
@@ -655,7 +655,7 @@
         updateOrderSummary();
     }
 
-    function submitOrder(){
+    function submitOrder(submit_btn){
         const savedCart = localStorage.getItem('bookhavenCart');
         if (!savedCart || JSON.parse(savedCart).length === 0) {
             alert('購物車是空的！');
@@ -693,7 +693,83 @@
         form.action = '{{ route("order.store") }}';
         form.method = 'POST';
         // 提交表單
-        form.submit();
+        // form.submit();
+         // 顯示載入狀態
+        const submitButton = submit_btn;
+        const originalText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = '處理中...';
+        const formData = new FormData(form);
+        // 發送 Ajax 請求
+        fetch('{{ route("order.store") }}', {  // 替換為你的實際路由
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    const error = new Error(errorData.message || '請求失敗');
+                    error.status = response.status;
+                    error.response = errorData;  // 保存完整的 response 資料
+                    throw error;
+                });
+            }
+            return response.json();
+        })
+        .then(response => {
+            if (response.code==200) {
+                // 訂單建立成功
+                Swal.fire({
+                    icon:  'success',
+                    title: '訂單建立成功！',
+                    text:  response.message
+                }).then((result) => {
+                    // 清空購物車
+                    localStorage.removeItem('bookhavenCart');
+                    // 重定向到成功頁面或重新載入頁面
+                    if (response.data.redirect_url) {
+                        window.location.href = response.data.redirect_url;
+                    } else {
+                        // 或者重新載入頁面
+                        window.location.reload();
+                    }
+                });
+
+
+            } else {
+                Swal.fire({
+                    icon:  'error',
+                    title: '訂單建立失敗，請重試',
+                    text:  response.message
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error.message);
+            console.error('提交訂單時發生錯誤:', error);
+            if (error.response && error.response.message) {
+                Swal.fire({
+                        icon:  'error',
+                        title: '訂單建立失敗，請重試',
+                        text:  error.response.message
+                });
+                return;
+            }
+            Swal.fire({
+                    icon:  'error',
+                    title: '訂單建立失敗，請重試',
+                    text:  '發生網路錯誤，請檢查連線後重試'
+            });
+        }).finally(() => {
+            // 恢復按鈕狀態
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = '確認訂單';
+            }
+        });
     }
 
     // 切換登入/註冊

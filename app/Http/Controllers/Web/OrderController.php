@@ -82,6 +82,9 @@ class OrderController extends Controller
                 $order->updatePrice();
 
             });
+            if($request->ajax()){
+                return $this->apiSuccess('訂單新增成功', ['redirect_url' => route('book.products')]);
+            }
             $response = [
                 'icon'  => 'success',
                 'title' => '訂單新增成功',
@@ -92,6 +95,9 @@ class OrderController extends Controller
             ));
         }catch(Exception $e){
             $message = '訂單新增失敗:' . $e->getMessage();
+            if($request->ajax()){
+                return $this->apiError($message, []);
+            }
             $response = [
                 'icon'  => 'error',
                 'title' => '訂單新增失敗',
