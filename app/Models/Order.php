@@ -39,7 +39,7 @@ class Order extends Model
                 $order->status = OrderStatus::default();
             }
             //  設定預設狀態
-            if (empty($order->status)) {
+            if (empty($order->payment_status)) {
                 $order->payment_status = PaymentStatus::default();
             }
         });
@@ -94,11 +94,11 @@ class Order extends Model
      */
     public function updatePaymentStatus(PaymentStatus $newStatus): bool
     {
-        // if (!$this->payment_status->canTransitionTo($newStatus)) {
-        //     throw new \InvalidArgumentException(
-        //         "無法從 {$this->payment_status->label()} 轉換到 {$newStatus->label()}"
-        //     );
-        // }
+        if (!$this->payment_status->canTransitionTo($newStatus)) {
+            throw new \InvalidArgumentException(
+                "無法從 {$this->payment_status->label()} 轉換到 {$newStatus->label()}"
+            );
+        }
         $this->payment_status = $newStatus;
 
         return $this->save();
