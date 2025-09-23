@@ -169,7 +169,7 @@ class OrderController extends Controller
         }catch(Exception $e){
             return $this->apiError('備註更新失敗:' . $e->getMessage());
         }
-        
+
     }
     /**
      * 更新訂單狀態
@@ -190,23 +190,10 @@ class OrderController extends Controller
             }
             $order->status = $newStatus;
             $order->save();
-            return response()->json([
-                    'success' => true,
-                    'message' => '訂單狀態更新成功',
-                    'status' => [
-                        'value' => $order->status->value,
-                        'label' => $order->status->label(),
-                        'color' => $order->status->color()
-                    ]
-            ]);
-            // return redirect()->back()->with('success', '訂單狀態更新成功');
+            return $this->apiSuccess('訂單狀態更新成功', []);
 
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => '更新失敗：' . $e->getMessage()
-            ], 400);
-            // return redirect()->back()->with('error', '更新失敗：' . $e->getMessage());
+            return $this->apiError('更新失敗：' . $e->getMessage());
         }
     }
 

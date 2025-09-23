@@ -180,7 +180,11 @@
                     @if(!$order->status->isFinal())
                         @foreach($order->status->getNextStatuses() as $nextStatus)
                             <button onclick="updateOrderStatus({{ $order->id }}, {{ $nextStatus->value }})"
-                                    class="w-full px-4 py-2 bg-{{ $nextStatus->color() }}-600 text-white rounded-md hover:bg-{{ $nextStatus->color() }}-700 focus:outline-none focus:ring-2 focus:ring-{{ $nextStatus->color() }}-500">
+                                    style="width: 100%; padding: 8px 16px; background-color: {{ $nextStatus->color() }}; color: white; border-radius: 6px; border: none; cursor: pointer; outline: none; transition: all 0.2s ease;"
+                                    onmouseover="this.style.backgroundColor='dark{{ $nextStatus->color() }}'; this.style.boxShadow='0 0 0 3px rgba(34, 197, 94, 0.3)'"
+                                    onmouseout="this.style.backgroundColor='{{ $nextStatus->color() }}'; this.style.boxShadow='none'"
+                                    onfocus="this.style.boxShadow='0 0 0 3px rgba(34, 197, 94, 0.3)'"
+                                    onblur="this.style.boxShadow='none'">
                                 {{ $nextStatus->label() }}
                             </button>
                         @endforeach
@@ -310,7 +314,7 @@ function updateOrderStatus(orderId, statusValue) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+        if (data.code==200) {
             Swal.fire({
                 icon:  'success',
                 title: '狀態更新成功',

@@ -394,7 +394,7 @@ document.getElementById('status-form').addEventListener('submit', function(e) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+        if (data.code==200) {
             Swal.fire({
                 icon:  'success',
                 title: '狀態更新成功',
