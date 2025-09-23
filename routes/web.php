@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Web\OrderController;
 
 // Route::get('/', 'App\Http\Controllers\Web\HomeController@index');
 // Route::get('/', 'App\Http\Controllers\Web\HomeController@home');
@@ -23,6 +24,15 @@ Route::middleware([
     Route::get('/dashboard', [\App\Http\Controllers\Web\BookController::class, 'dashboard'])->name('dashboard');
 
     Route::resource('book', \App\Http\Controllers\Web\BookController::class);
+    Route::get('/order/index', [OrderController::class, 'index'])->name('order.index');
+    // 訂單詳情
+    Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
+    // 更新訂單狀態
+    Route::post('/order/{order}/status', [OrderController::class, 'updateStatus'])->name('order.update-status');
+    // 更新付款狀態
+    Route::post('/order/{order}/payment-status', [OrderController::class, 'updatePaymentStatus'])->name('order.update-payment-status');
+    // 批量操作
+    Route::post('/order/batch-action', [OrderController::class, 'batchAction'])->name('order.batch-action');
 
 
 });
